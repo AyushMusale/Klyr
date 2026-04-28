@@ -1,7 +1,8 @@
 import "dotenv/config";
-import init from "./app.js";
-
+import {init} from "./app.js";
 
 //server initialization
 
-init();
+await init();
+
+
