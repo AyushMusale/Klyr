@@ -20,7 +20,7 @@ class Authusecase {
       final tokens = await googleAuthService.signInWithGoogle();
       await TokenStorage.saveTokens(
         accessToken: tokens['access_token']!,
-        refreshToken: tokens['refreshToken']!,
+        refreshToken: tokens['refresh_token']!,
       );
       return "success";
     } catch (e) {

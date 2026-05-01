@@ -9,14 +9,16 @@ final router = GoRouter(
       path: '/auth',
       name: "authpage",
       builder: (context, state) => const Authpage(),
-    ),
-    GoRoute(
-      path: '/otp',
-      name: "otppage",
-      builder: (context, state) {
-        final email = state.extra as String? ?? "";
-        return OtpPage(email: email);
-      },
+      routes: [
+        GoRoute(
+          path: 'otp',
+          name: "otppage",
+          builder: (context, state) {
+            final email = state.extra as String? ?? "";
+            return OtpPage(email: email);
+          },
+        ),
+      ],
     ),
   ],
 );
