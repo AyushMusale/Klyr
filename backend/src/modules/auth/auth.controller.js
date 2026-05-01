@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { Resend } from "resend";
 import { Redis } from "@upstash/redis";
 
+
 const resend = new Resend(process.env.RESEND_API);
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -48,13 +49,17 @@ async function assignToken(data) {
 export async function googleTokens(req, res) {
   try {
     if (!req.user) {
-      return res.status(401).json({ message: "Authentication failed" });
+      return res.status(401).json({
+        success: false,
+        message: "Authentication failed" });
     }
 
     const { googleId, email, id } = req.user;
 
     if (!req.user) {
-      return res.status(401).json({ message: "Authentication failed" });
+      return res.status(401).json({ 
+        success: false,
+        message: "Authentication failed" });
     }
 
     const data = {
@@ -69,7 +74,9 @@ export async function googleTokens(req, res) {
       `klyr://auth?access_token=${token.access_token}&refresh_token=${token.refresh_token}`,
     );
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({ 
+      success: false,
+      message: err.message });
   }
 }
 
@@ -114,6 +121,7 @@ async function requestOTPController(req, res) {
   //validate availability of email
   if (!email) {
     return res.status(400).json({
+      success: false,
       message: "email-required",
     });
   }
@@ -121,12 +129,12 @@ async function requestOTPController(req, res) {
   try {
     //send emial to verify email
     await otpEmail(email);
-    return res.status(200).json({
-      message: "success",
-      email: email,
-    });
+    return res
+      .status(200)
+      .json({ success: true, message: "success", email: email });
   } catch (err) {
     return res.status(500).json({
+      success: false,
       message: "server-error",
     });
   }
@@ -139,7 +147,9 @@ async function verifyEmailController(req, res) {
 
     //check if otp expired
     if (!storedOTP) {
-      return res.status(400).json({ message: "otp-expired" });
+      return res.status(400).json({ 
+        success: false,
+        message: "otp-expired" });
     }
 
     const inputhashedOTP = await crypto
@@ -180,6 +190,7 @@ async function verifyEmailController(req, res) {
       });
 
       return res.status(200).json({
+        success: true,
         message: "success",
         email: email,
         user_id: data.user_id,
@@ -191,10 +202,12 @@ async function verifyEmailController(req, res) {
     }
 
     return res.status(404).json({
+      success: false,
       message: "invalid-otp",
     });
   } catch (err) {
     return res.status(500).json({
+      success: false,
       message: "server-error",
     });
   }

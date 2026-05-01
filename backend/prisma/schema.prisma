@@ -12,6 +12,7 @@ model User {
   googleId String? @unique
   email String? @unique
   session session[]
+  profile Profile?
 }
 
 model session{
@@ -21,4 +22,14 @@ model session{
    expiresAt DateTime
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Profile{
+  profile_id Int @id @default(autoincrement())
+  user_id Int @unique
+  name String
+  email String @unique
+  phone_no String
+
+  user User @relation(fields: [user_id], references: [id])
 }
