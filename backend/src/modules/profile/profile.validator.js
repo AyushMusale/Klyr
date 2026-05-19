@@ -1,7 +1,7 @@
 import {z} from 'zod'
 
 const profileSchema = z.object({
-    user_id: z.string().min(1, "user id required").transform(Number),
+    user_id: z.number().min(1, "user id required").transform(Number),
     name: z.string().min(1, "name required"),
     email: z.string().email("invalid email"),
     phone_no: z.string().regex(/^\d{10,15}$/, "invalid phone number")
@@ -21,6 +21,7 @@ export default function profileValidator(req,res,next){
 
     if(!result.success){
         const error  = result.error.issues[0].message
+        console.log(error);
         return res.status(400).json({
             message: error
         })

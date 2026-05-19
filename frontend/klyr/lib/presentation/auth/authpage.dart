@@ -107,7 +107,7 @@ class _AuthpageState extends State<Authpage> {
                                   padding: EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(color: Colors.grey),
+                                    //border: Border.all(color: Colors.grey),
                                   ),
                                   child: TextField(
                                     controller: _emailController,

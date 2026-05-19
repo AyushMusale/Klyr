@@ -1,4 +1,5 @@
 import "package:dio/dio.dart";
+import "package:klyr/data/exception/authexception.dart";
 import "package:klyr/data/localdb/authdb.dart";
 
 class Authclient {
@@ -36,6 +37,14 @@ class Authclient {
               final token = await TokenStorage.getAccessToken();
               error.requestOptions.headers['Authorization'] = 'Bearer $token';
               handler.resolve(await _authclient.fetch(error.requestOptions));
+              return;
+            } else {
+              handler.reject(
+                DioException(
+                  requestOptions: error.requestOptions,
+                  error: UnauthorizedException(),
+                ),
+              );
               return;
             }
           }

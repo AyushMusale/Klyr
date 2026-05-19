@@ -1,6 +1,6 @@
-import auth_router from "../services/auth/auth.router.js"
+import auth_router from "../modules/auth/auth.router.js"
 import { Router } from "express";
-import profile_router from "../services/profile/profile.router.js";
+import profile_router from "../modules/profile/profile.router.js";
 
 const root_router = Router();
 //root url: /klyr/api

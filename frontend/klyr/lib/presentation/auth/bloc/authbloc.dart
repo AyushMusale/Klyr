@@ -1,4 +1,5 @@
 import 'package:klyr/data/localdb/authdb.dart';
+import 'package:klyr/data/localdb/profiledb.dart';
 import 'package:klyr/data/repo/authrepo.dart';
 import 'package:klyr/data/service/googleservice.dart';
 import 'package:klyr/domain/usecase/authusecase.dart';
@@ -104,6 +105,7 @@ class Authbloc extends Bloc<Authevent, Authstate> {
   Future<void> _onLogout(LogoutEvent event, Emitter<Authstate> emit) async {
     emit(const Authstate(isLoading: true, isError: false, message: "loading"));
     await TokenStorage.clearTokens();
+    await ProfileStorage.clearProfile();
     emit(AuthInitialstate());
   }
 }

@@ -27,9 +27,40 @@ export async function createProfile(req, res) {
       profile,
     });
   } catch (e) {
+
     return res.status(500).json({
       success: false,
       message: "server-error",
     });
+  }
+}
+
+export async function getProfile(req,res) {
+  try{
+    const user = req.user;
+
+    const profile = await prisma.profile.findUnique({ 
+      where: {
+        user_id: user.user_id
+      }
+    });
+
+    if(!profile){
+      return res.status(404).json({
+        success: false,
+        message: 'no-profile-found',
+        profile: null
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      message: 'profile-found',
+      profile: profile
+    })
+  }catch(e){
+    return res.status(500).json({
+      success: false,
+      message: 'server-error'
+    })
   }
 }

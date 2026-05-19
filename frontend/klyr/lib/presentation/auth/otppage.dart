@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:klyr/presentation/auth/bloc/authbloc.dart';
 import 'package:klyr/presentation/auth/bloc/authevent.dart';
 import 'package:klyr/presentation/auth/bloc/authstate.dart';
@@ -35,6 +36,7 @@ class _OtpPageState extends State<OtpPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("OTP verified successfully")),
           );
+          context.pushReplacementNamed("profilepage");
         } else if (!state.isLoading &&
             state.message == "otp-sent" &&
             state.email == widget.email) {
@@ -143,9 +145,8 @@ class _OtpPageState extends State<OtpPage> {
                                   ),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: Colors.grey.shade300,
-                                    ),
+                                    //border: Border.all(
+                                     //
                                   ),
                                   child: TextField(
                                     controller: _otpController,

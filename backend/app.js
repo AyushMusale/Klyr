@@ -1,5 +1,5 @@
 import express from "express";
-import root_router from "./src/configure/routes.js";
+import root_router from "./src/routes/routes.js";
 import passport from "passport";
 import "./src/configure/passport.js";
 
