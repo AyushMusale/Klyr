@@ -11,7 +11,12 @@ class Authbloc extends Bloc<Authevent, Authstate> {
   final Authusecase _usecase;
 
   Authbloc({Authusecase? usecase})
-    : _usecase = usecase ?? Authusecase(authrepo: Authrepo(), googleAuthService: GoogleAuthService()),
+    : _usecase =
+          usecase ??
+          Authusecase(
+            authrepo: Authrepo(),
+            googleAuthService: GoogleAuthService(),
+          ),
       super(AuthInitialstate()) {
     on<GetOTPEvent>(_onGetOtp);
     on<VerifyOTPEvent>(_onVerifyOtp);
@@ -19,27 +24,17 @@ class Authbloc extends Bloc<Authevent, Authstate> {
     on<GoogleAuthEvent>(_onGoogleAuth);
   }
 
-  Future<void> _onGoogleAuth(GoogleAuthEvent event, Emitter<Authstate> emit) async{
+  Future<void> _onGoogleAuth(
+    GoogleAuthEvent event,
+    Emitter<Authstate> emit,
+  ) async {
     emit(const Authstate(isLoading: true, isError: false, message: "loading"));
     try {
       final message = await _usecase.googleAuth();
-      if(message == "success"){
-        emit(
-        Authstate(
-          isLoading: false,
-          isError: false,
-          message: "success",
-        ),
-      );
-      }
-      else{
-        emit(
-        Authstate(
-          isLoading: false,
-          isError: true,
-          message: "failure",
-        ),
-      );
+      if (message == "success") {
+        emit(Authstate(isLoading: false, isError: false, message: "success"));
+      } else {
+        emit(Authstate(isLoading: false, isError: true, message: "failure"));
       }
     } catch (e) {
       emit(Authstate(isLoading: false, isError: true, message: e.toString()));
@@ -103,7 +98,6 @@ class Authbloc extends Bloc<Authevent, Authstate> {
   }
 
   Future<void> _onLogout(LogoutEvent event, Emitter<Authstate> emit) async {
-    emit(const Authstate(isLoading: true, isError: false, message: "loading"));
     await TokenStorage.clearTokens();
     await ProfileStorage.clearProfile();
     emit(AuthInitialstate());

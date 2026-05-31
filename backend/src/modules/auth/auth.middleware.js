@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { prisma } from "../../configure/db.js";
+import { assignToken } from "./auth.controller.js";
 
 function authmiddleware(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1]; //gets the token only
@@ -20,6 +21,7 @@ function authmiddleware(req, res, next) {
 }
 
 async function refreshUserController(req, res) {
+  console.log('refreshuser hit')
   const { refresh_token } = req.body;
 
   if (!refresh_token) {
@@ -65,6 +67,7 @@ async function refreshUserController(req, res) {
       tokens: newTokens,
     });
   } catch (err) {
+    console.log(err)
     if (err.name === "TokenExpiredError") {
       return res.status(401).json({ message: "refresh-token-expired" });
     }

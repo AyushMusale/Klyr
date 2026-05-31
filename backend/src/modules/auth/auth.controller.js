@@ -16,7 +16,7 @@ function generateOTP() {
   return crypto.randomInt(100000, 1000000).toString();
 }
 
-async function assignToken(data) {
+export async function assignToken(data) {
   const access_token = jwt.sign(
     {
       email: data.email ?? "null",

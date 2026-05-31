@@ -31,7 +31,8 @@ class Authclient {
 
         onError: (error, handler) async {
           if (error.response?.statusCode == 401 &&
-              error.response?.data['message'] == 'access-token-expired') {
+              (error.response?.data['message'] == 'access-token-expired' ||
+                  error.response?.data['message'] == 'invalid-token')) {
             final refreshed = await _refresh();
             if (refreshed) {
               final token = await TokenStorage.getAccessToken();
@@ -59,12 +60,12 @@ class Authclient {
       final refreshToken = await TokenStorage.getRefreshToken();
       final response = await Dio().post(
         // plain Dio, no interceptor to avoid loop
-        'http://10.0.2.2:3000/klyr/api/auth/refresh',
+        'http://10.0.2.2:3003/klyr/api/auth/refersh',
         data: {'refresh_token': refreshToken},
       );
       await TokenStorage.saveTokens(
         accessToken: response.data['tokens']['access_token'],
-        refreshToken: response.data['tokens']['refreshToken'],
+        refreshToken: response.data['tokens']['refresh_token'],
       );
       return true;
     } catch (_) {

@@ -29,7 +29,6 @@ class Profilerepo {
       final data = res.data;
       return  ProfileModel.fromJson(data['profile']);
     } on DioException catch (e) {
-      print(e);
       if(e.response?.statusCode == 404){
         throw GenPurposeException('empty');
       }

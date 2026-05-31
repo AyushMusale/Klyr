@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   Int                    @id @default(autoincrement())
+  googleId             String?                @unique
+  email                String?                @unique
+  session              Session[]
+  profile              Profile?
+  expense              Expenses[]
+  group                Group[]
+  Expesne_participants Expense_Participants[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  token     String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Profile {
+  profile_id Int    @id @default(autoincrement())
+  user_id    Int    @unique
+  name       String
+  email      String @unique
+  phone_no   String
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model Expenses {
+  expense_id Int             @id @default(autoincrement())
+  amount     Float
+  category   ExpenseCategory
+  title      String
+  group_id   Int?
+  created_at DateTime        @default(now())
+  currency   String          @default("INR")
+
+  created_by Int
+  user       User   @relation(fields: [created_by], references: [id], onDelete: Cascade)
+  group      Group? @relation(fields: [group_id], references: [group_id])
+
+  Expense_participants Expense_Participants[]
+}
+
+enum ExpenseCategory {
+  FOOD
+  RENT
+  TRANSPORT
+  UTILITIES
+  ENTERTAINMENT
+  SHOPPING
+  HEALTH
+  EDUCATION
+  TRAVEL
+  SUBSCRIPTIONS
+  OTHER
+}
+
+model Group {
+  group_id   Int    @id @default(autoincrement())
+  group_name String
+
+  created_by Int
+  created_at DateTime @default(now())
+
+  creator User @relation(fields: [created_by], references: [id])
+
+  expenses     Expenses[]
+  groupMembers Group_Members[]
+}
+
+model Expense_Participants {
+  expense_participants_id Int @id @default(autoincrement())
+
+  expense_id   Int
+  user_id      Int
+  share_amount Float
+  is_settled   Boolean
+
+  expense Expenses @relation(fields: [expense_id], references: [expense_id])
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@unique([expense_id, user_id])
+}
+
+model Group_Members {
+  id         Int    @id @default(autoincrement())
+  group_id   Int
+  user_email String
+
+  group Group @relation(fields: [group_id], references: [group_id])
+
+  @@unique([group_id, user_email])
+}

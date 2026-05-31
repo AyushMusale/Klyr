@@ -69,6 +69,7 @@ class _ProfilepageState extends State<Profilepage> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(const SnackBar(content: Text("Profile saved")));
+          context.pushNamed("homepage");
         }
       },
       child: Scaffold(

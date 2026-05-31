@@ -12,6 +12,12 @@ class Authstate {
   });
 }
 
+
+class UnauthState extends Authstate {
+  UnauthState()
+    : super(isError: false, isLoading: false, message: "unauth");
+}
+
 class AuthInitialstate extends Authstate {
   AuthInitialstate()
     : super(isError: false, isLoading: false, message: "initializing");
