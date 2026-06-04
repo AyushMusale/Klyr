@@ -111,7 +111,7 @@ class _HomepageState extends State<Homepage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (_segmentIndex == 0) {
-            context.pushNamed('createpersonalexpensepage');
+            context.pushNamed('creategrouppage');
           } else {
             context.pushNamed('createpersonalexpensepage');
           }

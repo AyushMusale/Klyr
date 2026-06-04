@@ -1,5 +1,4 @@
 import 'package:klyr/data/model/activity_items.dart';
-import 'package:klyr/data/model/summary_row.dart';
 
 class HomeState {}
 

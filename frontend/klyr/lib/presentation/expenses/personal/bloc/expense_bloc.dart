@@ -14,6 +14,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
     on<CreateExpenseEvent>(_onCreate);
     on<GetExpenseByIDEvent>(_onGetbyID);
     on<EditExpenseEvent>(_onEdit);
+    on<GetExpenseEvent>(_onGet);
   }
 
   Future<void> _onCreate(
@@ -90,6 +91,24 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
       );
 
       emit(ExpenseCreatedState(message: data));
+    } catch (e) {
+      if (e is UnauthorizedException) {
+        emit(
+          ExpenseUnauthState(message: 'Session Expired! Please LogIn again'),
+        );
+      } else if (e is GenPurposeException) {
+        emit(ExpenseFailureState(message: e.message));
+      } else {
+        emit(ExpenseFailureState(message: 'Something went wrong'));
+      }
+    }
+  }
+
+  Future<void> _onGet(ExpenseEvent event, Emitter<ExpenseState> emit) async {
+    emit(ExpenseLoadingState());
+    try {
+      final personalExpense = await personalExpenseUsecase.getPersonalExpense();
+      emit(ExpenseLoadedState(personalExpense: personalExpense));
     } catch (e) {
       if (e is UnauthorizedException) {
         emit(

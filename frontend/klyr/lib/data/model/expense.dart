@@ -25,4 +25,5 @@ class Expense {
       date: DateTime.parse(json['created_at']),
     );
   }
+
 }

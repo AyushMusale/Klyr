@@ -1,4 +1,5 @@
 import 'package:klyr/data/model/expense.dart';
+import 'package:klyr/data/model/personal_expense.dart';
 import 'package:klyr/data/repo/personal_expense_repo.dart';
 
 class PersonalExpenseUsecase {
@@ -9,6 +10,14 @@ class PersonalExpenseUsecase {
   Future<String> createPersonalExpense(Expense expense) async {
     try {
       return await personalExpenseRepo.createPersonalExpense(expense: expense);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<PersonalExpense> getPersonalExpense() async {
+    try {
+      return await personalExpenseRepo.getPersonalExpense();
     } catch (e) {
       rethrow;
     }
