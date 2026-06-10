@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:klyr/injection.dart';
 import 'package:klyr/presentation/auth/bloc/authbloc.dart';
+import 'package:klyr/presentation/expenses/group/group creation/bloc/group_bloc.dart';
+import 'package:klyr/presentation/expenses/group/group%20view/bloc/group_view_bloc.dart';
+import 'package:klyr/presentation/expenses/group/group%20managment/bloc/group_managment_bloc.dart';
 import 'package:klyr/presentation/expenses/personal/bloc/expense_bloc.dart';
 import 'package:klyr/presentation/home/bloc/home_bloc.dart';
 import 'package:klyr/presentation/profile/bloc/profilebloc.dart';
@@ -39,7 +42,6 @@ class MainApp extends StatelessWidget {
         BlocProvider.value(value: authbloc),
         BlocProvider(create: (_) => Profilebloc()),
         BlocProvider(
-          
           create:
               (_) => ExpenseBloc(
                 personalExpenseUsecase: injection.personalExpenseUsecase,
@@ -47,6 +49,15 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => HomeBloc(homeUsecase: injection.homeUsecase),
+        ),
+        BlocProvider(
+          create: (_) => GroupBloc(groupUsecase: injection.groupUsecase),
+        ),
+        BlocProvider(
+          create: (_) => GroupViewBloc(groupUsecase: injection.groupUsecase),
+        ),
+        BlocProvider(
+          create: (_) => GroupManagmentBloc(groupUsecase: injection.groupUsecase),
         ),
       ],
       child: MaterialApp.router(

@@ -43,7 +43,9 @@ class ExpenseNavigationPage extends StatelessWidget {
                           width: topCardW,
                           height: cardH,
                           child: SelectionCard(
-                            onTap: () {},
+                            onTap: () {
+                              context.pushNamed('viewallgroupspage');
+                            },
                             isDark: isDark,
                             icon: Icons.groups_outlined,
                             label: "Group",

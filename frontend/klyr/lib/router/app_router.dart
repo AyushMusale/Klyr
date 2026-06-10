@@ -3,7 +3,10 @@ import 'package:klyr/data/localdb/authdb.dart';
 import 'package:klyr/presentation/auth/authpage.dart';
 import 'package:klyr/presentation/auth/bloc/authbloc.dart';
 import 'package:klyr/presentation/auth/otppage.dart';
-import 'package:klyr/presentation/expenses/group/group creation/groupcreationpage.dart';
+import 'package:klyr/presentation/expenses/group/group%20creation/pages/groupcreationpage.dart';
+import 'package:klyr/presentation/expenses/group/group%20managment/pages/group_createexpensepage.dart';
+import 'package:klyr/presentation/expenses/group/group%20managment/pages/grouppage.dart';
+import 'package:klyr/presentation/expenses/group/group%20view/pages/allgrouppage.dart';
 import 'package:klyr/presentation/expenses/navigation/expense_navigation_page.dart';
 import 'package:klyr/presentation/expenses/personal/pages/createpersexppage.dart';
 import 'package:klyr/presentation/expenses/personal/pages/listpersonalexppage.dart';
@@ -34,6 +37,7 @@ const tabs = [
     icon: Icons.pie_chart_outline_rounded,
     label: 'Summary',
   ),
+  TabConfig(path: '/profile', icon: Icons.people_rounded, label: 'Profile'),
 ];
 
 GoRouter createRouter(Authbloc authbloc) => GoRouter(
@@ -95,13 +99,14 @@ GoRouter createRouter(Authbloc authbloc) => GoRouter(
           name: "expensenavigationpage",
           builder: (context, state) => const ExpenseNavigationPage(),
         ),
+        GoRoute(
+          path: '/profile',
+          name: 'profilepage',
+          builder: (context, state) => const Profilepage(),
+        ),
       ],
     ),
-    GoRoute(
-      path: '/profile',
-      name: 'profilepage',
-      builder: (context, state) => const Profilepage(),
-    ),
+
     GoRoute(
       path: '/createpersonalexpense',
       name: 'createpersonalexpensepage',
@@ -123,6 +128,23 @@ GoRouter createRouter(Authbloc authbloc) => GoRouter(
       path: '/creategroup',
       name: 'creategrouppage',
       builder: (context, state) => const GroupCreationPage(),
+    ),
+    GoRoute(
+      path: '/allgroups',
+      name: 'viewallgroupspage',
+      builder: (context, state) => ViewAllGroupsPage(),
+    ),
+    GoRoute(
+      path: '/group/:id',
+      name: 'grouppage',
+      builder: (context, state) => Grouppage(id: state.pathParameters['id']!),
+    ),
+    GoRoute(
+      path: '/groupx/:id/createexpense',
+      name: 'groupcreateexpensepage',
+      builder:
+          (context, state) =>
+              GroupCreateexpensepage(id: state.pathParameters['id']!),
     ),
   ],
 );

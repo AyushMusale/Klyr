@@ -28,6 +28,7 @@ class _ShowAllPersonalexppageState extends State<ShowAllPersonalexppage> {
   }
 
   List<ActivityItem> items = [];
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;

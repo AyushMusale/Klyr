@@ -6,8 +6,8 @@ class Authclient {
   static final Dio _authclient = Dio(
     BaseOptions(
       baseUrl: 'http://10.0.2.2:3003/klyr/api',
-      connectTimeout: Duration(seconds: 10),
-      receiveTimeout: Duration(seconds: 10),
+      connectTimeout: Duration(seconds: 20),
+      receiveTimeout: Duration(seconds: 20),
       headers: {'Content-Type': 'application/json'},
     ),
   );
