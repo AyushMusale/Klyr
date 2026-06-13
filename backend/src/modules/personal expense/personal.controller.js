@@ -15,6 +15,7 @@ export async function personalExpenseCreateController(req, res) {
         group_id: null,
         currency: currency,
         created_at: created_at,
+        paid_by: req.user.email
       },
     });
 
@@ -22,7 +23,6 @@ export async function personalExpenseCreateController(req, res) {
       message: "expense added",
     });
   } catch (e) {
-    console.log(e);
     return res.status(500).json({
       message: "server-error",
     });
@@ -151,8 +151,6 @@ export async function getExpenseById(req, res) {
       expense,
     });
   } catch (e) {
-    
-    console.log(e);
     return res.status(500).json({
       message: "server-error",
     });

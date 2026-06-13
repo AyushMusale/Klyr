@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:klyr/theme/app_theme.dart';
 
+// ─── Segmented Tab Toggle ────────────────────────────────────────────────────
+
 class BuildExpenseTab extends StatelessWidget {
   final bool isDark;
   final double width;
@@ -8,6 +10,7 @@ class BuildExpenseTab extends StatelessWidget {
   final int selectedTab;
   final GestureTapCallback onEqual;
   final GestureTapCallback onCustom;
+
   const BuildExpenseTab({
     super.key,
     required this.isDark,
@@ -20,55 +23,102 @@ class BuildExpenseTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color trackColor =
+        isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF0F0F0);
+    final Color activeText = Colors.white;
+    final Color inactiveText =
+        isDark ? const Color(0xFF888888) : const Color(0xFF666666);
+
     return Container(
-      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
       height: height,
       width: width,
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: isDark ? Colors.black : Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        color: trackColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isDark ? const Color(0xFF2A2A2A) : const Color(0xFFE0E0E0),
+          width: 1,
+        ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          GestureDetector(
+          _Tab(
+            label: 'Equal',
+            isActive: selectedTab == 0,
+            activeText: activeText,
+            inactiveText: inactiveText,
             onTap: onEqual,
-            child: Container(
-              width: width * 0.3,
-              decoration: BoxDecoration(
-                color: selectedTab == 0 ? AppColors.primary : Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  "Equal",
-                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
-                ),
-              ),
-            ),
           ),
-          GestureDetector(
+          _Tab(
+            label: 'Custom',
+            isActive: selectedTab == 1,
+            activeText: activeText,
+            inactiveText: inactiveText,
             onTap: onCustom,
-            child: Container(
-              width: width * 0.3,
-              decoration: BoxDecoration(
-                color: selectedTab == 1 ? AppColors.primary : Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  "Custom",
-                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
-                ),
-              ),
-            ),
           ),
         ],
       ),
     );
   }
 }
+
+class _Tab extends StatelessWidget {
+  final String label;
+  final bool isActive;
+  final Color activeText;
+  final Color inactiveText;
+  final VoidCallback onTap;
+
+  const _Tab({
+    required this.label,
+    required this.isActive,
+    required this.activeText,
+    required this.inactiveText,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            color: isActive ? AppColors.primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow:
+                isActive
+                    ? [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.35),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
+                    : null,
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: isActive ? activeText : inactiveText,
+                fontSize: 13,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Member Share Tile ───────────────────────────────────────────────────────
 
 class ShareAmountTile extends StatelessWidget {
   final bool isDark;
@@ -79,6 +129,7 @@ class ShareAmountTile extends StatelessWidget {
   final TextEditingController controller;
   final bool readOnly;
   final double value;
+
   const ShareAmountTile({
     super.key,
     required this.isDark,
@@ -93,61 +144,115 @@ class ShareAmountTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color cardColor = isDark ? const Color(0xFF1A1A1A) : Colors.white;
+    final Color borderColor =
+        isDark ? const Color(0xFF2A2A2A) : const Color(0xFFE0E0E0);
+    final Color subtextColor =
+        isDark ? const Color(0xFFAAAAAA) : const Color(0xFF555555);
+    final Color fieldBg =
+        isDark ? const Color(0xFF111111) : const Color(0xFFF5F5F5);
+
     return Container(
-      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-      height: maxHeight * 0.05,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      height: maxHeight * 0.07,
       width: maxWidth,
       decoration: BoxDecoration(
-        color: Colors.blueGrey,
-        borderRadius: BorderRadius.circular(10),
+        color: cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor, width: 1),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CircleAvatar(
-            radius: 11,
-            backgroundColor: const Color(0xFFCC5500),
-            child: Text(
-              initials,
-              style: const TextStyle(
-                color: Color(0xFFFF8C3A),
-                fontSize: 8,
-                fontWeight: FontWeight.w600,
+          // Avatar with glow
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFCC5500).withValues(alpha: 0.4),
+                  blurRadius: 6,
+                  spreadRadius: 0,
+                ),
+              ],
+            ),
+            child: CircleAvatar(
+              radius: 16,
+              backgroundColor: const Color(0xFF2A1200),
+              child: Text(
+                initials,
+                style: const TextStyle(
+                  color: Color(0xFFFF8C3A),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
           ),
-          SizedBox(width: 5),
+          const SizedBox(width: 12),
+
+          // Email
           Expanded(
             child: Text(
               email,
               style: TextStyle(
-                color: isDark ? AppColors.primary : Colors.black,
+                color: subtextColor,
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
               ),
               overflow: TextOverflow.ellipsis,
             ),
           ),
+          const SizedBox(width: 10),
+
+          // Amount field
           SizedBox(
-            width: maxWidth * 0.2,
-            height: maxHeight * 0.044,
+            width: maxWidth * 0.22,
+            height: 36,
             child: TextField(
               controller: controller,
               readOnly: readOnly,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12),
-
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.white : Colors.black,
+              ),
               decoration: InputDecoration(
-                fillColor: isDark ? Colors.grey : Colors.grey.shade200,
+                fillColor: fieldBg,
                 filled: true,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
-                  vertical: 8,
+                  vertical: 9,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
+                hintText: value.toStringAsFixed(2),
+                hintStyle: TextStyle(
+                  color:
+                      isDark
+                          ? const Color(0xFF555555)
+                          : const Color(0xFFAAAAAA),
+                  fontSize: 13,
                 ),
-                hintText: value.toString(),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: borderColor, width: 1),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(
+                    color: AppColors.primary,
+                    width: 1.5,
+                  ),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: borderColor, width: 1),
+                ),
               ),
             ),
           ),
@@ -157,12 +262,15 @@ class ShareAmountTile extends StatelessWidget {
   }
 }
 
+// ─── Equal Split List ────────────────────────────────────────────────────────
+
 class EqualTabs extends StatelessWidget {
   final Map<String, TextEditingController> members;
   final bool isDark;
   final double maxHeight;
   final double maxWidth;
   final double amount;
+
   const EqualTabs({
     super.key,
     required this.members,
@@ -175,12 +283,11 @@ class EqualTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final emails = members.keys.toList();
-
     return Column(
       children: List.generate(emails.length, (index) {
         final email = emails[index];
         return Padding(
-          padding:EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.only(bottom: 8),
           child: ShareAmountTile(
             isDark: isDark,
             maxHeight: maxHeight,
@@ -198,11 +305,14 @@ class EqualTabs extends StatelessWidget {
   }
 }
 
+// ─── Custom Split List ───────────────────────────────────────────────────────
+
 class CustomTabs extends StatelessWidget {
   final Map<String, TextEditingController> members;
   final bool isDark;
   final double maxHeight;
   final double maxWidth;
+
   const CustomTabs({
     super.key,
     required this.members,
@@ -214,12 +324,11 @@ class CustomTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final emails = members.keys.toList();
-
     return Column(
       children: List.generate(emails.length, (index) {
         final email = emails[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.only(bottom: 8),
           child: ShareAmountTile(
             isDark: isDark,
             maxHeight: maxHeight,

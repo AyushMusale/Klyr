@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:klyr/data/model/group_expense.dart';
+import 'package:klyr/presentation/auth/bloc/authbloc.dart';
+import 'package:klyr/presentation/auth/bloc/authevent.dart';
 import 'package:klyr/presentation/expenses/group/group%20managment/bloc/group_managment_bloc.dart';
 import 'package:klyr/presentation/expenses/group/group%20managment/bloc/group_managment_event.dart';
+import 'package:klyr/presentation/expenses/group/group%20managment/bloc/group_mangment_state.dart';
 import 'package:klyr/presentation/expenses/group/group%20managment/widgets/summary_bloc.dart';
 import 'package:klyr/presentation/expenses/group/group%20managment/widgets/tabs.dart';
 import 'package:klyr/theme/app_theme.dart';
@@ -16,12 +20,35 @@ class Grouppage extends StatefulWidget {
 }
 
 class _GrouppageState extends State<Grouppage> {
+  String totalSpent = "...";
+  String totalOwes = "...";
+  String totalOwed = "...";
+  String title = "...";
+
+  List<GroupExpense> groupExpense = [];
+
   int selectedTab = 0;
 
   @override
   void initState() {
     context.read<GroupManagmentBloc>().add(GetGroupEvent(id: widget.id));
     super.initState();
+  }
+
+  void _initSummary({
+    required String spent,
+    required String owes,
+    required String owed,
+    required String groupName,
+    required List<GroupExpense> groupexpense,
+  }) {
+    setState(() {
+      totalSpent = spent;
+      totalOwes = owes;
+      totalOwed = owed;
+      title = groupName;
+      groupExpense = groupexpense;
+    });
   }
 
   @override
@@ -53,7 +80,7 @@ class _GrouppageState extends State<Grouppage> {
           ),
         ),
         title: Text(
-          'Title',
+          title,
           style: textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: -0.2,
@@ -71,82 +98,115 @@ class _GrouppageState extends State<Grouppage> {
         ),
       ),
       backgroundColor: pageBg,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final maxWidth = constraints.maxWidth;
-          final maxHeight = constraints.maxHeight;
-          //final horizontal = maxWidth > 600 ? maxWidth * 0.15 : 16.0;
+      body: BlocConsumer<GroupManagmentBloc, GroupMangmentState>(
+        listener: (context, state) {
+          if (state is GroupMangmentUnauthState) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+            context.read<Authbloc>().add(LogoutEvent());
+          } else if (state is GroupMangmentFailureState) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
+          } else if (state is GroupMangmentLoadedState) {
+            _initSummary(
+              spent: state.summary.totalSpent,
+              owes: state.summary.totalOwes,
+              owed: state.summary.totalOwed,
+              groupName: state.group.groupName,
+              groupexpense: state.groupExpense,
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is GroupMangmentLoadingState) {
+            return CircularProgressIndicator();
+          }
 
-          final summaryWidth = (maxWidth - 50) / 3;
-          return SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SummaryBloc(
-                        label: "Total Spent",
-                        amount: "1300",
-                        isDark: isDark,
-                        height: maxHeight * 0.09,
-                        width: summaryWidth,
-                        amountColor: Colors.black,
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final maxWidth = constraints.maxWidth;
+              final maxHeight = constraints.maxHeight;
+              //final horizontal = maxWidth > 600 ? maxWidth * 0.15 : 16.0;
+
+              final summaryWidth = (maxWidth - 50) / 3;
+              return SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        15.0,
+                        15.0,
+                        15.0,
+                        15.0,
                       ),
-                      SizedBox(width: 10),
-                      SummaryBloc(
-                        label: "You Owe",
-                        amount: "250",
-                        height: maxHeight * 0.09,
-                        isDark: isDark,
-                        width: summaryWidth,
-                        amountColor: Colors.red,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SummaryBloc(
+                            label: "Total Spent",
+                            amount: totalSpent,
+                            isDark: isDark,
+                            height: maxHeight * 0.09,
+                            width: summaryWidth,
+                            amountColor: Colors.black,
+                          ),
+                          SizedBox(width: 10),
+                          SummaryBloc(
+                            label: "You owe",
+                            amount: totalOwes,
+                            height: maxHeight * 0.09,
+                            isDark: isDark,
+                            width: summaryWidth,
+                            amountColor: Colors.red,
+                          ),
+                          SizedBox(width: 10),
+                          SummaryBloc(
+                            label: "Owed to you",
+                            amount: totalOwed,
+                            isDark: isDark,
+                            width: summaryWidth,
+                            height: maxHeight * 0.09,
+                            amountColor: Colors.green,
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 10),
-                      SummaryBloc(
-                        label: "Owed to you",
-                        amount: "360",
-                        isDark: isDark,
-                        width: summaryWidth,
-                        height: maxHeight * 0.09,
-                        amountColor: Colors.green,
-                      ),
-                    ],
-                  ),
-                ),
-                _buildTabBar(),
-                Expanded(
-                  child: IndexedStack(
-                    index: selectedTab,
-                    children: const [
-                      ExpensesTab(),
-                      BalancesTab(),
-                      MembersTab(),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: SizedBox(
-                    height: maxHeight * 0.07,
-                    width: maxWidth,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.pushNamed(
-                          'groupcreateexpensepage',
-                          pathParameters: {'id': widget.id},
-                        );
-                      },
-                      child: Text("+ Add expense"),
                     ),
-                  ),
+                    _buildTabBar(),
+                    Expanded(
+                      child: IndexedStack(
+                        index: selectedTab,
+                        children: [
+                          ExpensesTab(expenses: groupExpense),
+                          BalancesTab(),
+                          MembersTab(),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: SizedBox(
+                        height: maxHeight * 0.07,
+                        width: maxWidth,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.pushNamed(
+                              'groupcreateexpensepage',
+                              pathParameters: {'id': widget.id},
+                            );
+                          },
+                          child: Text("+ Add expense"),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           );
         },
       ),

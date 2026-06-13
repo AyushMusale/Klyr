@@ -5,15 +5,16 @@ import { prisma } from "../../configure/db.js";
 export async function createGroupExpenseController(req, res) {
   try {
     const {
-      group_id,
       title,
       amount,
       category,
       currency = "INR",
       split_type = "EQUAL",
       paid_by,
-      participants, // EQUAL: [{ email }]  CUSTOM: [{ email, share_amount }]
-    } = req.body;
+      participants, 
+    } = req.validatedData;
+
+    const group_id = parseInt(req.params.id);
 
     const requester_email = req.user.email;
 

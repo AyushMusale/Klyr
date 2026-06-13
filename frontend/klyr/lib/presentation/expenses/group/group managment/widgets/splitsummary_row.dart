@@ -48,6 +48,15 @@ class SplitSummaryRow extends StatelessWidget {
               color: isDark ? Colors.white : Colors.black,
             ),
           ),
+          SizedBox(width: 12),
+          Text(
+            "req: ${((double.tryParse(total) ?? 0.0) - (double.tryParse(sum) ?? 0.0)).toStringAsFixed(2)}",
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white : Colors.black,
+            ),
+          ),
         ],
       ),
     );

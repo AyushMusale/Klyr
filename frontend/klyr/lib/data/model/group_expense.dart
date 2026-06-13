@@ -9,11 +9,12 @@ class GroupExpense {
   GroupExpense({required this.expense, required this.members, this.paidBy});
   factory GroupExpense.fromJson(Map<String, dynamic> json) {
     return GroupExpense(
-      expense: Expense.fromJson(json['expense']),
+      paidBy: json['paid_by'] as String?,
+      expense: Expense.fromJson(json),
       members:
-          (json['members'] as List<dynamic>)
+          (json['Expense_participants'] as List<dynamic>)
               .map((e) => GroupMembers.fromJson(e as Map<String, dynamic>))
-              .toList(),
+              .toList(),  
     );
   }
 }

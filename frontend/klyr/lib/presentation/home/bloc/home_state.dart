@@ -1,15 +1,16 @@
 import 'package:klyr/data/model/activity_items.dart';
+import 'package:klyr/data/model/summary_row.dart';
 
 class HomeState {}
 
 class HomeSuccessState extends HomeState {
   List<ActivityItem> activityItems;
-  // List<SummaryRow> summaryRow;
-  // final String firstLetter;
+  List<ActivityItem> groupactivityItems;
+  HomeSummary summary;
   HomeSuccessState({
     required this.activityItems,
-    // required this.summaryRow,
-    // required this.firstLetter,
+    required this.groupactivityItems,
+    required this.summary,
   });
 }
 

@@ -15,6 +15,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeLoadingState());
     try {
       final personalExpense = await homeUsecase.getPersonalExpense();
+      final groups = await homeUsecase.getGroups();
+      final summary = await homeUsecase.getSummary();
       final personalActivities =
           personalExpense.personalExpenselist
               ?.map(
@@ -27,7 +29,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 ),
               )
               .toList();
-      emit(HomeSuccessState(activityItems: personalActivities!));
+      final groupActivities =
+          groups.groups
+              .map(
+                (e) => ActivityItem(
+                  id: e.groupId!,
+                  title: e.groupName,
+                  date: 'Members: ${e.members?.length}',
+                ),
+              )
+              .toList();
+      emit(
+        HomeSuccessState(
+          activityItems: personalActivities!,
+          groupactivityItems: groupActivities,
+          summary: summary,
+        ),
+      );
     } catch (e) {
       if (e is UnauthorizedException) {
         emit(HomeUnauthState(message: 'Session Expired! Please LogIn again'));

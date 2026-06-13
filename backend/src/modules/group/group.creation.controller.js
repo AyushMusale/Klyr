@@ -9,7 +9,6 @@ export async function createGroupController(req, res) {
     const { group_name, emails = [] } = req.body;
     const created_by = req.user.user_id;
     const creator_email = req.user.email;
-
     if (!group_name) {
       return res.status(400).json({ message: "group_name is required" });
     }
@@ -17,10 +16,13 @@ export async function createGroupController(req, res) {
     const group = await prisma.group.create({
       data: {
         group_name: group_name,
-        created_by: created_by,
+        creator: {
+          connect: { id: created_by },
+        },
         groupMembers: {
-          create: {
-            user_email: allEmails.map((email) => ({ user_email: email })),
+          createMany: {
+            data: allEmails.map((email) => ({ user_email: email })),
+            skipDuplicates: true,
           },
         },
       },
@@ -117,12 +119,19 @@ export async function getGroupsController(req, res) {
     const groups = await prisma.group.findMany({
       where: {
         groupMembers: {
-          some: user_email,
+          some: {
+            user_email: user_email,
+          },
         },
       },
       include: {
-        groupMembers: false,
+        groupMembers: true,
       },
+    });
+    console.log(groups)
+    return res.status(200).json({
+      message: "success",
+      groups: groups ?? [],
     });
   } catch (e) {
     return res.status(500).json({ message: "server-error" });
@@ -131,7 +140,7 @@ export async function getGroupsController(req, res) {
 
 export async function getOneGroupController(req, res) {
   try {
-    const { group_id } = req.body;
+    const group_id = parseInt(req.params.id);
     const user_email = req.user.email;
 
     const group = await prisma.group.findFirst({
@@ -146,8 +155,46 @@ export async function getOneGroupController(req, res) {
 
     if (!group) return res.status(404).json({ message: "group not found" });
 
-    return res.status(200).json({ group });
+    let total_spent = 0;
+    let total_owed = 0;
+    let total_owes = 0;
+
+    const expenses = await prisma.expenses.findMany({
+      where: { group_id },
+      include: { Expense_participants: true },
+    });
+
+    for (const expense of expenses) {
+      const userParticipant = expense.Expense_participants.find(
+        (p) => p.user_email === user_email,
+      );
+
+      if (!userParticipant) continue;
+
+      if (expense.paid_by === user_email) {
+        total_spent += expense.amount;
+        const othersShare = expense.Expense_participants.filter(
+          (p) => p.user_email !== user_email && !p.is_settled,
+        ).reduce((sum, p) => sum + p.share_amount, 0);
+        total_owed += othersShare;
+      } else {
+        if (!userParticipant.is_settled) {
+          total_owes += userParticipant.share_amount;
+        }
+      }
+    }
+   // console.log(group, expenses);
+    return res.status(200).json({
+      group: group,
+      summary: {
+        total_spent,
+        total_owed,
+        total_owes,
+      },
+      expenses: expenses,
+    });
   } catch (e) {
+    console.log(e);
     return res.status(500).json({ message: "server-error" });
   }
 }

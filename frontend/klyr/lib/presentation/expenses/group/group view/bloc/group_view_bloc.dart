@@ -18,7 +18,6 @@ class GroupViewBloc extends Bloc<GroupViewEvent, GroupViewState> {
     emit(GroupViewLoadingState());
     try {
       final list = await groupUsecase.getALlGroups();
-
       emit(GroupViewLoadedState(groupList: list));
     } catch (e) {
       if (e is UnauthorizedException) {

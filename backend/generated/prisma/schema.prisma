@@ -8,14 +8,13 @@ datasource db {
 }
 
 model User {
-  id                   Int                    @id @default(autoincrement())
-  googleId             String?                @unique
-  email                String?                @unique
-  session              Session[]
-  profile              Profile?
-  expense              Expenses[]
-  group                Group[]
-  Expesne_participants Expense_Participants[]
+  id       Int        @id @default(autoincrement())
+  googleId String?    @unique
+  email    String?    @unique
+  session  Session[]
+  profile  Profile?
+  expense  Expenses[]
+  group    Group[]
 }
 
 model Session {
@@ -45,12 +44,20 @@ model Expenses {
   group_id   Int?
   created_at DateTime        @default(now())
   currency   String          @default("INR")
+  split_type SplitType       @default(EQUAL)
+  paid_by    String?
 
   created_by Int
   user       User   @relation(fields: [created_by], references: [id], onDelete: Cascade)
   group      Group? @relation(fields: [group_id], references: [group_id])
 
   Expense_participants Expense_Participants[]
+}
+
+enum SplitType {
+  EQUAL
+  CUSTOM
+  PERCENT
 }
 
 enum ExpenseCategory {
@@ -78,21 +85,20 @@ model Group {
 
   expenses     Expenses[]
   groupMembers Group_Members[]
+  settlements  Settlement[]
 }
 
 model Expense_Participants {
   expense_participants_id Int @id @default(autoincrement())
 
   expense_id   Int
-  user_id      Int
+  user_email   String
   share_amount Float
-  is_settled   Boolean
+  is_settled   Boolean @default(false)
 
   expense Expenses @relation(fields: [expense_id], references: [expense_id])
 
-  user User @relation(fields: [user_id], references: [id])
-
-  @@unique([expense_id, user_id])
+  @@unique([expense_id, user_email])
 }
 
 model Group_Members {
@@ -103,4 +109,15 @@ model Group_Members {
   group Group @relation(fields: [group_id], references: [group_id])
 
   @@unique([group_id, user_email])
+}
+
+model Settlement {
+  id         Int      @id @default(autoincrement())
+  group_id   Int
+  paid_by    String
+  paid_to    String
+  amount     Float
+  created_at DateTime @default(now())
+
+  group Group @relation(fields: [group_id], references: [group_id])
 }

@@ -23,7 +23,7 @@ class _GroupexppageState extends State<Groupexppage> {
           return ActivityListItem(
             item: widget.items[i],
             fn: () {
-              context.push('/showpersonalexpense/${widget.items[i].id}');
+              context.push('/group/${widget.items[i].id}');
             },
           );
         },

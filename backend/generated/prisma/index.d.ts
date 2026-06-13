@@ -48,12 +48,26 @@ export type Expense_Participants = $Result.DefaultSelection<Prisma.$Expense_Part
  * 
  */
 export type Group_Members = $Result.DefaultSelection<Prisma.$Group_MembersPayload>
+/**
+ * Model Settlement
+ * 
+ */
+export type Settlement = $Result.DefaultSelection<Prisma.$SettlementPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const ExpenseCategory: {
+  export const SplitType: {
+  EQUAL: 'EQUAL',
+  CUSTOM: 'CUSTOM',
+  PERCENT: 'PERCENT'
+};
+
+export type SplitType = (typeof SplitType)[keyof typeof SplitType]
+
+
+export const ExpenseCategory: {
   FOOD: 'FOOD',
   RENT: 'RENT',
   TRANSPORT: 'TRANSPORT',
@@ -70,6 +84,10 @@ export namespace $Enums {
 export type ExpenseCategory = (typeof ExpenseCategory)[keyof typeof ExpenseCategory]
 
 }
+
+export type SplitType = $Enums.SplitType
+
+export const SplitType: typeof $Enums.SplitType
 
 export type ExpenseCategory = $Enums.ExpenseCategory
 
@@ -265,6 +283,16 @@ export class PrismaClient<
     * ```
     */
   get group_Members(): Prisma.Group_MembersDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.settlement`: Exposes CRUD operations for the **Settlement** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Settlements
+    * const settlements = await prisma.settlement.findMany()
+    * ```
+    */
+  get settlement(): Prisma.SettlementDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -705,7 +733,8 @@ export namespace Prisma {
     Expenses: 'Expenses',
     Group: 'Group',
     Expense_Participants: 'Expense_Participants',
-    Group_Members: 'Group_Members'
+    Group_Members: 'Group_Members',
+    Settlement: 'Settlement'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -721,7 +750,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "profile" | "expenses" | "group" | "expense_Participants" | "group_Members"
+      modelProps: "user" | "session" | "profile" | "expenses" | "group" | "expense_Participants" | "group_Members" | "settlement"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1243,6 +1272,80 @@ export namespace Prisma {
           }
         }
       }
+      Settlement: {
+        payload: Prisma.$SettlementPayload<ExtArgs>
+        fields: Prisma.SettlementFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SettlementFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SettlementFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload>
+          }
+          findFirst: {
+            args: Prisma.SettlementFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SettlementFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload>
+          }
+          findMany: {
+            args: Prisma.SettlementFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload>[]
+          }
+          create: {
+            args: Prisma.SettlementCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload>
+          }
+          createMany: {
+            args: Prisma.SettlementCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SettlementCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload>[]
+          }
+          delete: {
+            args: Prisma.SettlementDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload>
+          }
+          update: {
+            args: Prisma.SettlementUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload>
+          }
+          deleteMany: {
+            args: Prisma.SettlementDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SettlementUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SettlementUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload>[]
+          }
+          upsert: {
+            args: Prisma.SettlementUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettlementPayload>
+          }
+          aggregate: {
+            args: Prisma.SettlementAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSettlement>
+          }
+          groupBy: {
+            args: Prisma.SettlementGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SettlementGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SettlementCountArgs<ExtArgs>
+            result: $Utils.Optional<SettlementCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1358,6 +1461,7 @@ export namespace Prisma {
     group?: GroupOmit
     expense_Participants?: Expense_ParticipantsOmit
     group_Members?: Group_MembersOmit
+    settlement?: SettlementOmit
   }
 
   /* Types for Logging */
@@ -1441,14 +1545,12 @@ export namespace Prisma {
     session: number
     expense: number
     group: number
-    Expesne_participants: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     session?: boolean | UserCountOutputTypeCountSessionArgs
     expense?: boolean | UserCountOutputTypeCountExpenseArgs
     group?: boolean | UserCountOutputTypeCountGroupArgs
-    Expesne_participants?: boolean | UserCountOutputTypeCountExpesne_participantsArgs
   }
 
   // Custom InputTypes
@@ -1481,13 +1583,6 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountGroupArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GroupWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountExpesne_participantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: Expense_ParticipantsWhereInput
   }
 
 
@@ -1529,11 +1624,13 @@ export namespace Prisma {
   export type GroupCountOutputType = {
     expenses: number
     groupMembers: number
+    settlements: number
   }
 
   export type GroupCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     expenses?: boolean | GroupCountOutputTypeCountExpensesArgs
     groupMembers?: boolean | GroupCountOutputTypeCountGroupMembersArgs
+    settlements?: boolean | GroupCountOutputTypeCountSettlementsArgs
   }
 
   // Custom InputTypes
@@ -1559,6 +1656,13 @@ export namespace Prisma {
    */
   export type GroupCountOutputTypeCountGroupMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: Group_MembersWhereInput
+  }
+
+  /**
+   * GroupCountOutputType without action
+   */
+  export type GroupCountOutputTypeCountSettlementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SettlementWhereInput
   }
 
 
@@ -1752,7 +1856,6 @@ export namespace Prisma {
     profile?: boolean | User$profileArgs<ExtArgs>
     expense?: boolean | User$expenseArgs<ExtArgs>
     group?: boolean | User$groupArgs<ExtArgs>
-    Expesne_participants?: boolean | User$Expesne_participantsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1780,7 +1883,6 @@ export namespace Prisma {
     profile?: boolean | User$profileArgs<ExtArgs>
     expense?: boolean | User$expenseArgs<ExtArgs>
     group?: boolean | User$groupArgs<ExtArgs>
-    Expesne_participants?: boolean | User$Expesne_participantsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1793,7 +1895,6 @@ export namespace Prisma {
       profile: Prisma.$ProfilePayload<ExtArgs> | null
       expense: Prisma.$ExpensesPayload<ExtArgs>[]
       group: Prisma.$GroupPayload<ExtArgs>[]
-      Expesne_participants: Prisma.$Expense_ParticipantsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -2197,7 +2298,6 @@ export namespace Prisma {
     profile<T extends User$profileArgs<ExtArgs> = {}>(args?: Subset<T, User$profileArgs<ExtArgs>>): Prisma__ProfileClient<$Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     expense<T extends User$expenseArgs<ExtArgs> = {}>(args?: Subset<T, User$expenseArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     group<T extends User$groupArgs<ExtArgs> = {}>(args?: Subset<T, User$groupArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    Expesne_participants<T extends User$Expesne_participantsArgs<ExtArgs> = {}>(args?: Subset<T, User$Expesne_participantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Expense_ParticipantsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2711,30 +2811,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GroupScalarFieldEnum | GroupScalarFieldEnum[]
-  }
-
-  /**
-   * User.Expesne_participants
-   */
-  export type User$Expesne_participantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Expense_Participants
-     */
-    select?: Expense_ParticipantsSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Expense_Participants
-     */
-    omit?: Expense_ParticipantsOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: Expense_ParticipantsInclude<ExtArgs> | null
-    where?: Expense_ParticipantsWhereInput
-    orderBy?: Expense_ParticipantsOrderByWithRelationInput | Expense_ParticipantsOrderByWithRelationInput[]
-    cursor?: Expense_ParticipantsWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: Expense_ParticipantsScalarFieldEnum | Expense_ParticipantsScalarFieldEnum[]
   }
 
   /**
@@ -4979,6 +5055,8 @@ export namespace Prisma {
     group_id: number | null
     created_at: Date | null
     currency: string | null
+    split_type: $Enums.SplitType | null
+    paid_by: string | null
     created_by: number | null
   }
 
@@ -4990,6 +5068,8 @@ export namespace Prisma {
     group_id: number | null
     created_at: Date | null
     currency: string | null
+    split_type: $Enums.SplitType | null
+    paid_by: string | null
     created_by: number | null
   }
 
@@ -5001,6 +5081,8 @@ export namespace Prisma {
     group_id: number
     created_at: number
     currency: number
+    split_type: number
+    paid_by: number
     created_by: number
     _all: number
   }
@@ -5028,6 +5110,8 @@ export namespace Prisma {
     group_id?: true
     created_at?: true
     currency?: true
+    split_type?: true
+    paid_by?: true
     created_by?: true
   }
 
@@ -5039,6 +5123,8 @@ export namespace Prisma {
     group_id?: true
     created_at?: true
     currency?: true
+    split_type?: true
+    paid_by?: true
     created_by?: true
   }
 
@@ -5050,6 +5136,8 @@ export namespace Prisma {
     group_id?: true
     created_at?: true
     currency?: true
+    split_type?: true
+    paid_by?: true
     created_by?: true
     _all?: true
   }
@@ -5148,6 +5236,8 @@ export namespace Prisma {
     group_id: number | null
     created_at: Date
     currency: string
+    split_type: $Enums.SplitType
+    paid_by: string | null
     created_by: number
     _count: ExpensesCountAggregateOutputType | null
     _avg: ExpensesAvgAggregateOutputType | null
@@ -5178,6 +5268,8 @@ export namespace Prisma {
     group_id?: boolean
     created_at?: boolean
     currency?: boolean
+    split_type?: boolean
+    paid_by?: boolean
     created_by?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     group?: boolean | Expenses$groupArgs<ExtArgs>
@@ -5193,6 +5285,8 @@ export namespace Prisma {
     group_id?: boolean
     created_at?: boolean
     currency?: boolean
+    split_type?: boolean
+    paid_by?: boolean
     created_by?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     group?: boolean | Expenses$groupArgs<ExtArgs>
@@ -5206,6 +5300,8 @@ export namespace Prisma {
     group_id?: boolean
     created_at?: boolean
     currency?: boolean
+    split_type?: boolean
+    paid_by?: boolean
     created_by?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     group?: boolean | Expenses$groupArgs<ExtArgs>
@@ -5219,10 +5315,12 @@ export namespace Prisma {
     group_id?: boolean
     created_at?: boolean
     currency?: boolean
+    split_type?: boolean
+    paid_by?: boolean
     created_by?: boolean
   }
 
-  export type ExpensesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"expense_id" | "amount" | "category" | "title" | "group_id" | "created_at" | "currency" | "created_by", ExtArgs["result"]["expenses"]>
+  export type ExpensesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"expense_id" | "amount" | "category" | "title" | "group_id" | "created_at" | "currency" | "split_type" | "paid_by" | "created_by", ExtArgs["result"]["expenses"]>
   export type ExpensesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     group?: boolean | Expenses$groupArgs<ExtArgs>
@@ -5253,6 +5351,8 @@ export namespace Prisma {
       group_id: number | null
       created_at: Date
       currency: string
+      split_type: $Enums.SplitType
+      paid_by: string | null
       created_by: number
     }, ExtArgs["result"]["expenses"]>
     composites: {}
@@ -5687,6 +5787,8 @@ export namespace Prisma {
     readonly group_id: FieldRef<"Expenses", 'Int'>
     readonly created_at: FieldRef<"Expenses", 'DateTime'>
     readonly currency: FieldRef<"Expenses", 'String'>
+    readonly split_type: FieldRef<"Expenses", 'SplitType'>
+    readonly paid_by: FieldRef<"Expenses", 'String'>
     readonly created_by: FieldRef<"Expenses", 'Int'>
   }
     
@@ -6347,6 +6449,7 @@ export namespace Prisma {
     creator?: boolean | UserDefaultArgs<ExtArgs>
     expenses?: boolean | Group$expensesArgs<ExtArgs>
     groupMembers?: boolean | Group$groupMembersArgs<ExtArgs>
+    settlements?: boolean | Group$settlementsArgs<ExtArgs>
     _count?: boolean | GroupCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["group"]>
 
@@ -6378,6 +6481,7 @@ export namespace Prisma {
     creator?: boolean | UserDefaultArgs<ExtArgs>
     expenses?: boolean | Group$expensesArgs<ExtArgs>
     groupMembers?: boolean | Group$groupMembersArgs<ExtArgs>
+    settlements?: boolean | Group$settlementsArgs<ExtArgs>
     _count?: boolean | GroupCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GroupIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6393,6 +6497,7 @@ export namespace Prisma {
       creator: Prisma.$UserPayload<ExtArgs>
       expenses: Prisma.$ExpensesPayload<ExtArgs>[]
       groupMembers: Prisma.$Group_MembersPayload<ExtArgs>[]
+      settlements: Prisma.$SettlementPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       group_id: number
@@ -6796,6 +6901,7 @@ export namespace Prisma {
     creator<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     expenses<T extends Group$expensesArgs<ExtArgs> = {}>(args?: Subset<T, Group$expensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpensesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     groupMembers<T extends Group$groupMembersArgs<ExtArgs> = {}>(args?: Subset<T, Group$groupMembersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Group_MembersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    settlements<T extends Group$settlementsArgs<ExtArgs> = {}>(args?: Subset<T, Group$settlementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7278,6 +7384,30 @@ export namespace Prisma {
   }
 
   /**
+   * Group.settlements
+   */
+  export type Group$settlementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    where?: SettlementWhereInput
+    orderBy?: SettlementOrderByWithRelationInput | SettlementOrderByWithRelationInput[]
+    cursor?: SettlementWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SettlementScalarFieldEnum | SettlementScalarFieldEnum[]
+  }
+
+  /**
    * Group without action
    */
   export type GroupDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7311,21 +7441,19 @@ export namespace Prisma {
   export type Expense_ParticipantsAvgAggregateOutputType = {
     expense_participants_id: number | null
     expense_id: number | null
-    user_id: number | null
     share_amount: number | null
   }
 
   export type Expense_ParticipantsSumAggregateOutputType = {
     expense_participants_id: number | null
     expense_id: number | null
-    user_id: number | null
     share_amount: number | null
   }
 
   export type Expense_ParticipantsMinAggregateOutputType = {
     expense_participants_id: number | null
     expense_id: number | null
-    user_id: number | null
+    user_email: string | null
     share_amount: number | null
     is_settled: boolean | null
   }
@@ -7333,7 +7461,7 @@ export namespace Prisma {
   export type Expense_ParticipantsMaxAggregateOutputType = {
     expense_participants_id: number | null
     expense_id: number | null
-    user_id: number | null
+    user_email: string | null
     share_amount: number | null
     is_settled: boolean | null
   }
@@ -7341,7 +7469,7 @@ export namespace Prisma {
   export type Expense_ParticipantsCountAggregateOutputType = {
     expense_participants_id: number
     expense_id: number
-    user_id: number
+    user_email: number
     share_amount: number
     is_settled: number
     _all: number
@@ -7351,21 +7479,19 @@ export namespace Prisma {
   export type Expense_ParticipantsAvgAggregateInputType = {
     expense_participants_id?: true
     expense_id?: true
-    user_id?: true
     share_amount?: true
   }
 
   export type Expense_ParticipantsSumAggregateInputType = {
     expense_participants_id?: true
     expense_id?: true
-    user_id?: true
     share_amount?: true
   }
 
   export type Expense_ParticipantsMinAggregateInputType = {
     expense_participants_id?: true
     expense_id?: true
-    user_id?: true
+    user_email?: true
     share_amount?: true
     is_settled?: true
   }
@@ -7373,7 +7499,7 @@ export namespace Prisma {
   export type Expense_ParticipantsMaxAggregateInputType = {
     expense_participants_id?: true
     expense_id?: true
-    user_id?: true
+    user_email?: true
     share_amount?: true
     is_settled?: true
   }
@@ -7381,7 +7507,7 @@ export namespace Prisma {
   export type Expense_ParticipantsCountAggregateInputType = {
     expense_participants_id?: true
     expense_id?: true
-    user_id?: true
+    user_email?: true
     share_amount?: true
     is_settled?: true
     _all?: true
@@ -7476,7 +7602,7 @@ export namespace Prisma {
   export type Expense_ParticipantsGroupByOutputType = {
     expense_participants_id: number
     expense_id: number
-    user_id: number
+    user_email: string
     share_amount: number
     is_settled: boolean
     _count: Expense_ParticipantsCountAggregateOutputType | null
@@ -7503,65 +7629,58 @@ export namespace Prisma {
   export type Expense_ParticipantsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     expense_participants_id?: boolean
     expense_id?: boolean
-    user_id?: boolean
+    user_email?: boolean
     share_amount?: boolean
     is_settled?: boolean
     expense?: boolean | ExpensesDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["expense_Participants"]>
 
   export type Expense_ParticipantsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     expense_participants_id?: boolean
     expense_id?: boolean
-    user_id?: boolean
+    user_email?: boolean
     share_amount?: boolean
     is_settled?: boolean
     expense?: boolean | ExpensesDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["expense_Participants"]>
 
   export type Expense_ParticipantsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     expense_participants_id?: boolean
     expense_id?: boolean
-    user_id?: boolean
+    user_email?: boolean
     share_amount?: boolean
     is_settled?: boolean
     expense?: boolean | ExpensesDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["expense_Participants"]>
 
   export type Expense_ParticipantsSelectScalar = {
     expense_participants_id?: boolean
     expense_id?: boolean
-    user_id?: boolean
+    user_email?: boolean
     share_amount?: boolean
     is_settled?: boolean
   }
 
-  export type Expense_ParticipantsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"expense_participants_id" | "expense_id" | "user_id" | "share_amount" | "is_settled", ExtArgs["result"]["expense_Participants"]>
+  export type Expense_ParticipantsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"expense_participants_id" | "expense_id" | "user_email" | "share_amount" | "is_settled", ExtArgs["result"]["expense_Participants"]>
   export type Expense_ParticipantsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     expense?: boolean | ExpensesDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type Expense_ParticipantsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     expense?: boolean | ExpensesDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type Expense_ParticipantsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     expense?: boolean | ExpensesDefaultArgs<ExtArgs>
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $Expense_ParticipantsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Expense_Participants"
     objects: {
       expense: Prisma.$ExpensesPayload<ExtArgs>
-      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       expense_participants_id: number
       expense_id: number
-      user_id: number
+      user_email: string
       share_amount: number
       is_settled: boolean
     }, ExtArgs["result"]["expense_Participants"]>
@@ -7959,7 +8078,6 @@ export namespace Prisma {
   export interface Prisma__Expense_ParticipantsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     expense<T extends ExpensesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ExpensesDefaultArgs<ExtArgs>>): Prisma__ExpensesClient<$Result.GetResult<Prisma.$ExpensesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7991,7 +8109,7 @@ export namespace Prisma {
   interface Expense_ParticipantsFieldRefs {
     readonly expense_participants_id: FieldRef<"Expense_Participants", 'Int'>
     readonly expense_id: FieldRef<"Expense_Participants", 'Int'>
-    readonly user_id: FieldRef<"Expense_Participants", 'Int'>
+    readonly user_email: FieldRef<"Expense_Participants", 'String'>
     readonly share_amount: FieldRef<"Expense_Participants", 'Float'>
     readonly is_settled: FieldRef<"Expense_Participants", 'Boolean'>
   }
@@ -9489,6 +9607,1124 @@ export namespace Prisma {
 
 
   /**
+   * Model Settlement
+   */
+
+  export type AggregateSettlement = {
+    _count: SettlementCountAggregateOutputType | null
+    _avg: SettlementAvgAggregateOutputType | null
+    _sum: SettlementSumAggregateOutputType | null
+    _min: SettlementMinAggregateOutputType | null
+    _max: SettlementMaxAggregateOutputType | null
+  }
+
+  export type SettlementAvgAggregateOutputType = {
+    id: number | null
+    group_id: number | null
+    amount: number | null
+  }
+
+  export type SettlementSumAggregateOutputType = {
+    id: number | null
+    group_id: number | null
+    amount: number | null
+  }
+
+  export type SettlementMinAggregateOutputType = {
+    id: number | null
+    group_id: number | null
+    paid_by: string | null
+    paid_to: string | null
+    amount: number | null
+    created_at: Date | null
+  }
+
+  export type SettlementMaxAggregateOutputType = {
+    id: number | null
+    group_id: number | null
+    paid_by: string | null
+    paid_to: string | null
+    amount: number | null
+    created_at: Date | null
+  }
+
+  export type SettlementCountAggregateOutputType = {
+    id: number
+    group_id: number
+    paid_by: number
+    paid_to: number
+    amount: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type SettlementAvgAggregateInputType = {
+    id?: true
+    group_id?: true
+    amount?: true
+  }
+
+  export type SettlementSumAggregateInputType = {
+    id?: true
+    group_id?: true
+    amount?: true
+  }
+
+  export type SettlementMinAggregateInputType = {
+    id?: true
+    group_id?: true
+    paid_by?: true
+    paid_to?: true
+    amount?: true
+    created_at?: true
+  }
+
+  export type SettlementMaxAggregateInputType = {
+    id?: true
+    group_id?: true
+    paid_by?: true
+    paid_to?: true
+    amount?: true
+    created_at?: true
+  }
+
+  export type SettlementCountAggregateInputType = {
+    id?: true
+    group_id?: true
+    paid_by?: true
+    paid_to?: true
+    amount?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type SettlementAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Settlement to aggregate.
+     */
+    where?: SettlementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settlements to fetch.
+     */
+    orderBy?: SettlementOrderByWithRelationInput | SettlementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SettlementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settlements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settlements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Settlements
+    **/
+    _count?: true | SettlementCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SettlementAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SettlementSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SettlementMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SettlementMaxAggregateInputType
+  }
+
+  export type GetSettlementAggregateType<T extends SettlementAggregateArgs> = {
+        [P in keyof T & keyof AggregateSettlement]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSettlement[P]>
+      : GetScalarType<T[P], AggregateSettlement[P]>
+  }
+
+
+
+
+  export type SettlementGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SettlementWhereInput
+    orderBy?: SettlementOrderByWithAggregationInput | SettlementOrderByWithAggregationInput[]
+    by: SettlementScalarFieldEnum[] | SettlementScalarFieldEnum
+    having?: SettlementScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SettlementCountAggregateInputType | true
+    _avg?: SettlementAvgAggregateInputType
+    _sum?: SettlementSumAggregateInputType
+    _min?: SettlementMinAggregateInputType
+    _max?: SettlementMaxAggregateInputType
+  }
+
+  export type SettlementGroupByOutputType = {
+    id: number
+    group_id: number
+    paid_by: string
+    paid_to: string
+    amount: number
+    created_at: Date
+    _count: SettlementCountAggregateOutputType | null
+    _avg: SettlementAvgAggregateOutputType | null
+    _sum: SettlementSumAggregateOutputType | null
+    _min: SettlementMinAggregateOutputType | null
+    _max: SettlementMaxAggregateOutputType | null
+  }
+
+  type GetSettlementGroupByPayload<T extends SettlementGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SettlementGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SettlementGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SettlementGroupByOutputType[P]>
+            : GetScalarType<T[P], SettlementGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SettlementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    group_id?: boolean
+    paid_by?: boolean
+    paid_to?: boolean
+    amount?: boolean
+    created_at?: boolean
+    group?: boolean | GroupDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["settlement"]>
+
+  export type SettlementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    group_id?: boolean
+    paid_by?: boolean
+    paid_to?: boolean
+    amount?: boolean
+    created_at?: boolean
+    group?: boolean | GroupDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["settlement"]>
+
+  export type SettlementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    group_id?: boolean
+    paid_by?: boolean
+    paid_to?: boolean
+    amount?: boolean
+    created_at?: boolean
+    group?: boolean | GroupDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["settlement"]>
+
+  export type SettlementSelectScalar = {
+    id?: boolean
+    group_id?: boolean
+    paid_by?: boolean
+    paid_to?: boolean
+    amount?: boolean
+    created_at?: boolean
+  }
+
+  export type SettlementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "group_id" | "paid_by" | "paid_to" | "amount" | "created_at", ExtArgs["result"]["settlement"]>
+  export type SettlementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    group?: boolean | GroupDefaultArgs<ExtArgs>
+  }
+  export type SettlementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    group?: boolean | GroupDefaultArgs<ExtArgs>
+  }
+  export type SettlementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    group?: boolean | GroupDefaultArgs<ExtArgs>
+  }
+
+  export type $SettlementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Settlement"
+    objects: {
+      group: Prisma.$GroupPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      group_id: number
+      paid_by: string
+      paid_to: string
+      amount: number
+      created_at: Date
+    }, ExtArgs["result"]["settlement"]>
+    composites: {}
+  }
+
+  type SettlementGetPayload<S extends boolean | null | undefined | SettlementDefaultArgs> = $Result.GetResult<Prisma.$SettlementPayload, S>
+
+  type SettlementCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SettlementFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SettlementCountAggregateInputType | true
+    }
+
+  export interface SettlementDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Settlement'], meta: { name: 'Settlement' } }
+    /**
+     * Find zero or one Settlement that matches the filter.
+     * @param {SettlementFindUniqueArgs} args - Arguments to find a Settlement
+     * @example
+     * // Get one Settlement
+     * const settlement = await prisma.settlement.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SettlementFindUniqueArgs>(args: SelectSubset<T, SettlementFindUniqueArgs<ExtArgs>>): Prisma__SettlementClient<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Settlement that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SettlementFindUniqueOrThrowArgs} args - Arguments to find a Settlement
+     * @example
+     * // Get one Settlement
+     * const settlement = await prisma.settlement.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SettlementFindUniqueOrThrowArgs>(args: SelectSubset<T, SettlementFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SettlementClient<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Settlement that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettlementFindFirstArgs} args - Arguments to find a Settlement
+     * @example
+     * // Get one Settlement
+     * const settlement = await prisma.settlement.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SettlementFindFirstArgs>(args?: SelectSubset<T, SettlementFindFirstArgs<ExtArgs>>): Prisma__SettlementClient<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Settlement that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettlementFindFirstOrThrowArgs} args - Arguments to find a Settlement
+     * @example
+     * // Get one Settlement
+     * const settlement = await prisma.settlement.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SettlementFindFirstOrThrowArgs>(args?: SelectSubset<T, SettlementFindFirstOrThrowArgs<ExtArgs>>): Prisma__SettlementClient<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Settlements that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettlementFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Settlements
+     * const settlements = await prisma.settlement.findMany()
+     * 
+     * // Get first 10 Settlements
+     * const settlements = await prisma.settlement.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const settlementWithIdOnly = await prisma.settlement.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SettlementFindManyArgs>(args?: SelectSubset<T, SettlementFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Settlement.
+     * @param {SettlementCreateArgs} args - Arguments to create a Settlement.
+     * @example
+     * // Create one Settlement
+     * const Settlement = await prisma.settlement.create({
+     *   data: {
+     *     // ... data to create a Settlement
+     *   }
+     * })
+     * 
+     */
+    create<T extends SettlementCreateArgs>(args: SelectSubset<T, SettlementCreateArgs<ExtArgs>>): Prisma__SettlementClient<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Settlements.
+     * @param {SettlementCreateManyArgs} args - Arguments to create many Settlements.
+     * @example
+     * // Create many Settlements
+     * const settlement = await prisma.settlement.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SettlementCreateManyArgs>(args?: SelectSubset<T, SettlementCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Settlements and returns the data saved in the database.
+     * @param {SettlementCreateManyAndReturnArgs} args - Arguments to create many Settlements.
+     * @example
+     * // Create many Settlements
+     * const settlement = await prisma.settlement.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Settlements and only return the `id`
+     * const settlementWithIdOnly = await prisma.settlement.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SettlementCreateManyAndReturnArgs>(args?: SelectSubset<T, SettlementCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Settlement.
+     * @param {SettlementDeleteArgs} args - Arguments to delete one Settlement.
+     * @example
+     * // Delete one Settlement
+     * const Settlement = await prisma.settlement.delete({
+     *   where: {
+     *     // ... filter to delete one Settlement
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SettlementDeleteArgs>(args: SelectSubset<T, SettlementDeleteArgs<ExtArgs>>): Prisma__SettlementClient<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Settlement.
+     * @param {SettlementUpdateArgs} args - Arguments to update one Settlement.
+     * @example
+     * // Update one Settlement
+     * const settlement = await prisma.settlement.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SettlementUpdateArgs>(args: SelectSubset<T, SettlementUpdateArgs<ExtArgs>>): Prisma__SettlementClient<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Settlements.
+     * @param {SettlementDeleteManyArgs} args - Arguments to filter Settlements to delete.
+     * @example
+     * // Delete a few Settlements
+     * const { count } = await prisma.settlement.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SettlementDeleteManyArgs>(args?: SelectSubset<T, SettlementDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Settlements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettlementUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Settlements
+     * const settlement = await prisma.settlement.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SettlementUpdateManyArgs>(args: SelectSubset<T, SettlementUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Settlements and returns the data updated in the database.
+     * @param {SettlementUpdateManyAndReturnArgs} args - Arguments to update many Settlements.
+     * @example
+     * // Update many Settlements
+     * const settlement = await prisma.settlement.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Settlements and only return the `id`
+     * const settlementWithIdOnly = await prisma.settlement.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SettlementUpdateManyAndReturnArgs>(args: SelectSubset<T, SettlementUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Settlement.
+     * @param {SettlementUpsertArgs} args - Arguments to update or create a Settlement.
+     * @example
+     * // Update or create a Settlement
+     * const settlement = await prisma.settlement.upsert({
+     *   create: {
+     *     // ... data to create a Settlement
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Settlement we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SettlementUpsertArgs>(args: SelectSubset<T, SettlementUpsertArgs<ExtArgs>>): Prisma__SettlementClient<$Result.GetResult<Prisma.$SettlementPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Settlements.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettlementCountArgs} args - Arguments to filter Settlements to count.
+     * @example
+     * // Count the number of Settlements
+     * const count = await prisma.settlement.count({
+     *   where: {
+     *     // ... the filter for the Settlements we want to count
+     *   }
+     * })
+    **/
+    count<T extends SettlementCountArgs>(
+      args?: Subset<T, SettlementCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SettlementCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Settlement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettlementAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SettlementAggregateArgs>(args: Subset<T, SettlementAggregateArgs>): Prisma.PrismaPromise<GetSettlementAggregateType<T>>
+
+    /**
+     * Group by Settlement.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettlementGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SettlementGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SettlementGroupByArgs['orderBy'] }
+        : { orderBy?: SettlementGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SettlementGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSettlementGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Settlement model
+   */
+  readonly fields: SettlementFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Settlement.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SettlementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    group<T extends GroupDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GroupDefaultArgs<ExtArgs>>): Prisma__GroupClient<$Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Settlement model
+   */
+  interface SettlementFieldRefs {
+    readonly id: FieldRef<"Settlement", 'Int'>
+    readonly group_id: FieldRef<"Settlement", 'Int'>
+    readonly paid_by: FieldRef<"Settlement", 'String'>
+    readonly paid_to: FieldRef<"Settlement", 'String'>
+    readonly amount: FieldRef<"Settlement", 'Float'>
+    readonly created_at: FieldRef<"Settlement", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Settlement findUnique
+   */
+  export type SettlementFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which Settlement to fetch.
+     */
+    where: SettlementWhereUniqueInput
+  }
+
+  /**
+   * Settlement findUniqueOrThrow
+   */
+  export type SettlementFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which Settlement to fetch.
+     */
+    where: SettlementWhereUniqueInput
+  }
+
+  /**
+   * Settlement findFirst
+   */
+  export type SettlementFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which Settlement to fetch.
+     */
+    where?: SettlementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settlements to fetch.
+     */
+    orderBy?: SettlementOrderByWithRelationInput | SettlementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Settlements.
+     */
+    cursor?: SettlementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settlements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settlements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Settlements.
+     */
+    distinct?: SettlementScalarFieldEnum | SettlementScalarFieldEnum[]
+  }
+
+  /**
+   * Settlement findFirstOrThrow
+   */
+  export type SettlementFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which Settlement to fetch.
+     */
+    where?: SettlementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settlements to fetch.
+     */
+    orderBy?: SettlementOrderByWithRelationInput | SettlementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Settlements.
+     */
+    cursor?: SettlementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settlements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settlements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Settlements.
+     */
+    distinct?: SettlementScalarFieldEnum | SettlementScalarFieldEnum[]
+  }
+
+  /**
+   * Settlement findMany
+   */
+  export type SettlementFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    /**
+     * Filter, which Settlements to fetch.
+     */
+    where?: SettlementWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settlements to fetch.
+     */
+    orderBy?: SettlementOrderByWithRelationInput | SettlementOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Settlements.
+     */
+    cursor?: SettlementWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settlements from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settlements.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Settlements.
+     */
+    distinct?: SettlementScalarFieldEnum | SettlementScalarFieldEnum[]
+  }
+
+  /**
+   * Settlement create
+   */
+  export type SettlementCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Settlement.
+     */
+    data: XOR<SettlementCreateInput, SettlementUncheckedCreateInput>
+  }
+
+  /**
+   * Settlement createMany
+   */
+  export type SettlementCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Settlements.
+     */
+    data: SettlementCreateManyInput | SettlementCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Settlement createManyAndReturn
+   */
+  export type SettlementCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * The data used to create many Settlements.
+     */
+    data: SettlementCreateManyInput | SettlementCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Settlement update
+   */
+  export type SettlementUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Settlement.
+     */
+    data: XOR<SettlementUpdateInput, SettlementUncheckedUpdateInput>
+    /**
+     * Choose, which Settlement to update.
+     */
+    where: SettlementWhereUniqueInput
+  }
+
+  /**
+   * Settlement updateMany
+   */
+  export type SettlementUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Settlements.
+     */
+    data: XOR<SettlementUpdateManyMutationInput, SettlementUncheckedUpdateManyInput>
+    /**
+     * Filter which Settlements to update
+     */
+    where?: SettlementWhereInput
+    /**
+     * Limit how many Settlements to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Settlement updateManyAndReturn
+   */
+  export type SettlementUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * The data used to update Settlements.
+     */
+    data: XOR<SettlementUpdateManyMutationInput, SettlementUncheckedUpdateManyInput>
+    /**
+     * Filter which Settlements to update
+     */
+    where?: SettlementWhereInput
+    /**
+     * Limit how many Settlements to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Settlement upsert
+   */
+  export type SettlementUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Settlement to update in case it exists.
+     */
+    where: SettlementWhereUniqueInput
+    /**
+     * In case the Settlement found by the `where` argument doesn't exist, create a new Settlement with this data.
+     */
+    create: XOR<SettlementCreateInput, SettlementUncheckedCreateInput>
+    /**
+     * In case the Settlement was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SettlementUpdateInput, SettlementUncheckedUpdateInput>
+  }
+
+  /**
+   * Settlement delete
+   */
+  export type SettlementDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+    /**
+     * Filter which Settlement to delete.
+     */
+    where: SettlementWhereUniqueInput
+  }
+
+  /**
+   * Settlement deleteMany
+   */
+  export type SettlementDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Settlements to delete
+     */
+    where?: SettlementWhereInput
+    /**
+     * Limit how many Settlements to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Settlement without action
+   */
+  export type SettlementDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Settlement
+     */
+    select?: SettlementSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Settlement
+     */
+    omit?: SettlementOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettlementInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9540,6 +10776,8 @@ export namespace Prisma {
     group_id: 'group_id',
     created_at: 'created_at',
     currency: 'currency',
+    split_type: 'split_type',
+    paid_by: 'paid_by',
     created_by: 'created_by'
   };
 
@@ -9559,7 +10797,7 @@ export namespace Prisma {
   export const Expense_ParticipantsScalarFieldEnum: {
     expense_participants_id: 'expense_participants_id',
     expense_id: 'expense_id',
-    user_id: 'user_id',
+    user_email: 'user_email',
     share_amount: 'share_amount',
     is_settled: 'is_settled'
   };
@@ -9574,6 +10812,18 @@ export namespace Prisma {
   };
 
   export type Group_MembersScalarFieldEnum = (typeof Group_MembersScalarFieldEnum)[keyof typeof Group_MembersScalarFieldEnum]
+
+
+  export const SettlementScalarFieldEnum: {
+    id: 'id',
+    group_id: 'group_id',
+    paid_by: 'paid_by',
+    paid_to: 'paid_to',
+    amount: 'amount',
+    created_at: 'created_at'
+  };
+
+  export type SettlementScalarFieldEnum = (typeof SettlementScalarFieldEnum)[keyof typeof SettlementScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -9676,6 +10926,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'SplitType'
+   */
+  export type EnumSplitTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SplitType'>
+    
+
+
+  /**
+   * Reference to a field of type 'SplitType[]'
+   */
+  export type ListEnumSplitTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SplitType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -9696,7 +10960,6 @@ export namespace Prisma {
     profile?: XOR<ProfileNullableScalarRelationFilter, ProfileWhereInput> | null
     expense?: ExpensesListRelationFilter
     group?: GroupListRelationFilter
-    Expesne_participants?: Expense_ParticipantsListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -9707,7 +10970,6 @@ export namespace Prisma {
     profile?: ProfileOrderByWithRelationInput
     expense?: ExpensesOrderByRelationAggregateInput
     group?: GroupOrderByRelationAggregateInput
-    Expesne_participants?: Expense_ParticipantsOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -9721,7 +10983,6 @@ export namespace Prisma {
     profile?: XOR<ProfileNullableScalarRelationFilter, ProfileWhereInput> | null
     expense?: ExpensesListRelationFilter
     group?: GroupListRelationFilter
-    Expesne_participants?: Expense_ParticipantsListRelationFilter
   }, "id" | "googleId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -9864,6 +11125,8 @@ export namespace Prisma {
     group_id?: IntNullableFilter<"Expenses"> | number | null
     created_at?: DateTimeFilter<"Expenses"> | Date | string
     currency?: StringFilter<"Expenses"> | string
+    split_type?: EnumSplitTypeFilter<"Expenses"> | $Enums.SplitType
+    paid_by?: StringNullableFilter<"Expenses"> | string | null
     created_by?: IntFilter<"Expenses"> | number
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     group?: XOR<GroupNullableScalarRelationFilter, GroupWhereInput> | null
@@ -9878,6 +11141,8 @@ export namespace Prisma {
     group_id?: SortOrderInput | SortOrder
     created_at?: SortOrder
     currency?: SortOrder
+    split_type?: SortOrder
+    paid_by?: SortOrderInput | SortOrder
     created_by?: SortOrder
     user?: UserOrderByWithRelationInput
     group?: GroupOrderByWithRelationInput
@@ -9895,6 +11160,8 @@ export namespace Prisma {
     group_id?: IntNullableFilter<"Expenses"> | number | null
     created_at?: DateTimeFilter<"Expenses"> | Date | string
     currency?: StringFilter<"Expenses"> | string
+    split_type?: EnumSplitTypeFilter<"Expenses"> | $Enums.SplitType
+    paid_by?: StringNullableFilter<"Expenses"> | string | null
     created_by?: IntFilter<"Expenses"> | number
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     group?: XOR<GroupNullableScalarRelationFilter, GroupWhereInput> | null
@@ -9909,6 +11176,8 @@ export namespace Prisma {
     group_id?: SortOrderInput | SortOrder
     created_at?: SortOrder
     currency?: SortOrder
+    split_type?: SortOrder
+    paid_by?: SortOrderInput | SortOrder
     created_by?: SortOrder
     _count?: ExpensesCountOrderByAggregateInput
     _avg?: ExpensesAvgOrderByAggregateInput
@@ -9928,6 +11197,8 @@ export namespace Prisma {
     group_id?: IntNullableWithAggregatesFilter<"Expenses"> | number | null
     created_at?: DateTimeWithAggregatesFilter<"Expenses"> | Date | string
     currency?: StringWithAggregatesFilter<"Expenses"> | string
+    split_type?: EnumSplitTypeWithAggregatesFilter<"Expenses"> | $Enums.SplitType
+    paid_by?: StringNullableWithAggregatesFilter<"Expenses"> | string | null
     created_by?: IntWithAggregatesFilter<"Expenses"> | number
   }
 
@@ -9942,6 +11213,7 @@ export namespace Prisma {
     creator?: XOR<UserScalarRelationFilter, UserWhereInput>
     expenses?: ExpensesListRelationFilter
     groupMembers?: Group_MembersListRelationFilter
+    settlements?: SettlementListRelationFilter
   }
 
   export type GroupOrderByWithRelationInput = {
@@ -9952,6 +11224,7 @@ export namespace Prisma {
     creator?: UserOrderByWithRelationInput
     expenses?: ExpensesOrderByRelationAggregateInput
     groupMembers?: Group_MembersOrderByRelationAggregateInput
+    settlements?: SettlementOrderByRelationAggregateInput
   }
 
   export type GroupWhereUniqueInput = Prisma.AtLeast<{
@@ -9965,6 +11238,7 @@ export namespace Prisma {
     creator?: XOR<UserScalarRelationFilter, UserWhereInput>
     expenses?: ExpensesListRelationFilter
     groupMembers?: Group_MembersListRelationFilter
+    settlements?: SettlementListRelationFilter
   }, "group_id">
 
   export type GroupOrderByWithAggregationInput = {
@@ -9995,41 +11269,38 @@ export namespace Prisma {
     NOT?: Expense_ParticipantsWhereInput | Expense_ParticipantsWhereInput[]
     expense_participants_id?: IntFilter<"Expense_Participants"> | number
     expense_id?: IntFilter<"Expense_Participants"> | number
-    user_id?: IntFilter<"Expense_Participants"> | number
+    user_email?: StringFilter<"Expense_Participants"> | string
     share_amount?: FloatFilter<"Expense_Participants"> | number
     is_settled?: BoolFilter<"Expense_Participants"> | boolean
     expense?: XOR<ExpensesScalarRelationFilter, ExpensesWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type Expense_ParticipantsOrderByWithRelationInput = {
     expense_participants_id?: SortOrder
     expense_id?: SortOrder
-    user_id?: SortOrder
+    user_email?: SortOrder
     share_amount?: SortOrder
     is_settled?: SortOrder
     expense?: ExpensesOrderByWithRelationInput
-    user?: UserOrderByWithRelationInput
   }
 
   export type Expense_ParticipantsWhereUniqueInput = Prisma.AtLeast<{
     expense_participants_id?: number
-    expense_id_user_id?: Expense_ParticipantsExpense_idUser_idCompoundUniqueInput
+    expense_id_user_email?: Expense_ParticipantsExpense_idUser_emailCompoundUniqueInput
     AND?: Expense_ParticipantsWhereInput | Expense_ParticipantsWhereInput[]
     OR?: Expense_ParticipantsWhereInput[]
     NOT?: Expense_ParticipantsWhereInput | Expense_ParticipantsWhereInput[]
     expense_id?: IntFilter<"Expense_Participants"> | number
-    user_id?: IntFilter<"Expense_Participants"> | number
+    user_email?: StringFilter<"Expense_Participants"> | string
     share_amount?: FloatFilter<"Expense_Participants"> | number
     is_settled?: BoolFilter<"Expense_Participants"> | boolean
     expense?: XOR<ExpensesScalarRelationFilter, ExpensesWhereInput>
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "expense_participants_id" | "expense_id_user_id">
+  }, "expense_participants_id" | "expense_id_user_email">
 
   export type Expense_ParticipantsOrderByWithAggregationInput = {
     expense_participants_id?: SortOrder
     expense_id?: SortOrder
-    user_id?: SortOrder
+    user_email?: SortOrder
     share_amount?: SortOrder
     is_settled?: SortOrder
     _count?: Expense_ParticipantsCountOrderByAggregateInput
@@ -10045,7 +11316,7 @@ export namespace Prisma {
     NOT?: Expense_ParticipantsScalarWhereWithAggregatesInput | Expense_ParticipantsScalarWhereWithAggregatesInput[]
     expense_participants_id?: IntWithAggregatesFilter<"Expense_Participants"> | number
     expense_id?: IntWithAggregatesFilter<"Expense_Participants"> | number
-    user_id?: IntWithAggregatesFilter<"Expense_Participants"> | number
+    user_email?: StringWithAggregatesFilter<"Expense_Participants"> | string
     share_amount?: FloatWithAggregatesFilter<"Expense_Participants"> | number
     is_settled?: BoolWithAggregatesFilter<"Expense_Participants"> | boolean
   }
@@ -10098,6 +11369,68 @@ export namespace Prisma {
     user_email?: StringWithAggregatesFilter<"Group_Members"> | string
   }
 
+  export type SettlementWhereInput = {
+    AND?: SettlementWhereInput | SettlementWhereInput[]
+    OR?: SettlementWhereInput[]
+    NOT?: SettlementWhereInput | SettlementWhereInput[]
+    id?: IntFilter<"Settlement"> | number
+    group_id?: IntFilter<"Settlement"> | number
+    paid_by?: StringFilter<"Settlement"> | string
+    paid_to?: StringFilter<"Settlement"> | string
+    amount?: FloatFilter<"Settlement"> | number
+    created_at?: DateTimeFilter<"Settlement"> | Date | string
+    group?: XOR<GroupScalarRelationFilter, GroupWhereInput>
+  }
+
+  export type SettlementOrderByWithRelationInput = {
+    id?: SortOrder
+    group_id?: SortOrder
+    paid_by?: SortOrder
+    paid_to?: SortOrder
+    amount?: SortOrder
+    created_at?: SortOrder
+    group?: GroupOrderByWithRelationInput
+  }
+
+  export type SettlementWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: SettlementWhereInput | SettlementWhereInput[]
+    OR?: SettlementWhereInput[]
+    NOT?: SettlementWhereInput | SettlementWhereInput[]
+    group_id?: IntFilter<"Settlement"> | number
+    paid_by?: StringFilter<"Settlement"> | string
+    paid_to?: StringFilter<"Settlement"> | string
+    amount?: FloatFilter<"Settlement"> | number
+    created_at?: DateTimeFilter<"Settlement"> | Date | string
+    group?: XOR<GroupScalarRelationFilter, GroupWhereInput>
+  }, "id">
+
+  export type SettlementOrderByWithAggregationInput = {
+    id?: SortOrder
+    group_id?: SortOrder
+    paid_by?: SortOrder
+    paid_to?: SortOrder
+    amount?: SortOrder
+    created_at?: SortOrder
+    _count?: SettlementCountOrderByAggregateInput
+    _avg?: SettlementAvgOrderByAggregateInput
+    _max?: SettlementMaxOrderByAggregateInput
+    _min?: SettlementMinOrderByAggregateInput
+    _sum?: SettlementSumOrderByAggregateInput
+  }
+
+  export type SettlementScalarWhereWithAggregatesInput = {
+    AND?: SettlementScalarWhereWithAggregatesInput | SettlementScalarWhereWithAggregatesInput[]
+    OR?: SettlementScalarWhereWithAggregatesInput[]
+    NOT?: SettlementScalarWhereWithAggregatesInput | SettlementScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Settlement"> | number
+    group_id?: IntWithAggregatesFilter<"Settlement"> | number
+    paid_by?: StringWithAggregatesFilter<"Settlement"> | string
+    paid_to?: StringWithAggregatesFilter<"Settlement"> | string
+    amount?: FloatWithAggregatesFilter<"Settlement"> | number
+    created_at?: DateTimeWithAggregatesFilter<"Settlement"> | Date | string
+  }
+
   export type UserCreateInput = {
     googleId?: string | null
     email?: string | null
@@ -10105,7 +11438,6 @@ export namespace Prisma {
     profile?: ProfileCreateNestedOneWithoutUserInput
     expense?: ExpensesCreateNestedManyWithoutUserInput
     group?: GroupCreateNestedManyWithoutCreatorInput
-    Expesne_participants?: Expense_ParticipantsCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -10116,7 +11448,6 @@ export namespace Prisma {
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     expense?: ExpensesUncheckedCreateNestedManyWithoutUserInput
     group?: GroupUncheckedCreateNestedManyWithoutCreatorInput
-    Expesne_participants?: Expense_ParticipantsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -10126,7 +11457,6 @@ export namespace Prisma {
     profile?: ProfileUpdateOneWithoutUserNestedInput
     expense?: ExpensesUpdateManyWithoutUserNestedInput
     group?: GroupUpdateManyWithoutCreatorNestedInput
-    Expesne_participants?: Expense_ParticipantsUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -10137,7 +11467,6 @@ export namespace Prisma {
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     expense?: ExpensesUncheckedUpdateManyWithoutUserNestedInput
     group?: GroupUncheckedUpdateManyWithoutCreatorNestedInput
-    Expesne_participants?: Expense_ParticipantsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -10260,6 +11589,8 @@ export namespace Prisma {
     title: string
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     user: UserCreateNestedOneWithoutExpenseInput
     group?: GroupCreateNestedOneWithoutExpensesInput
     Expense_participants?: Expense_ParticipantsCreateNestedManyWithoutExpenseInput
@@ -10273,6 +11604,8 @@ export namespace Prisma {
     group_id?: number | null
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     created_by: number
     Expense_participants?: Expense_ParticipantsUncheckedCreateNestedManyWithoutExpenseInput
   }
@@ -10283,6 +11616,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutExpenseNestedInput
     group?: GroupUpdateOneWithoutExpensesNestedInput
     Expense_participants?: Expense_ParticipantsUpdateManyWithoutExpenseNestedInput
@@ -10296,6 +11631,8 @@ export namespace Prisma {
     group_id?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     created_by?: IntFieldUpdateOperationsInput | number
     Expense_participants?: Expense_ParticipantsUncheckedUpdateManyWithoutExpenseNestedInput
   }
@@ -10308,6 +11645,8 @@ export namespace Prisma {
     group_id?: number | null
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     created_by: number
   }
 
@@ -10317,6 +11656,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ExpensesUncheckedUpdateManyInput = {
@@ -10327,6 +11668,8 @@ export namespace Prisma {
     group_id?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     created_by?: IntFieldUpdateOperationsInput | number
   }
 
@@ -10336,6 +11679,7 @@ export namespace Prisma {
     creator: UserCreateNestedOneWithoutGroupInput
     expenses?: ExpensesCreateNestedManyWithoutGroupInput
     groupMembers?: Group_MembersCreateNestedManyWithoutGroupInput
+    settlements?: SettlementCreateNestedManyWithoutGroupInput
   }
 
   export type GroupUncheckedCreateInput = {
@@ -10345,6 +11689,7 @@ export namespace Prisma {
     created_at?: Date | string
     expenses?: ExpensesUncheckedCreateNestedManyWithoutGroupInput
     groupMembers?: Group_MembersUncheckedCreateNestedManyWithoutGroupInput
+    settlements?: SettlementUncheckedCreateNestedManyWithoutGroupInput
   }
 
   export type GroupUpdateInput = {
@@ -10353,6 +11698,7 @@ export namespace Prisma {
     creator?: UserUpdateOneRequiredWithoutGroupNestedInput
     expenses?: ExpensesUpdateManyWithoutGroupNestedInput
     groupMembers?: Group_MembersUpdateManyWithoutGroupNestedInput
+    settlements?: SettlementUpdateManyWithoutGroupNestedInput
   }
 
   export type GroupUncheckedUpdateInput = {
@@ -10362,6 +11708,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     expenses?: ExpensesUncheckedUpdateManyWithoutGroupNestedInput
     groupMembers?: Group_MembersUncheckedUpdateManyWithoutGroupNestedInput
+    settlements?: SettlementUncheckedUpdateManyWithoutGroupNestedInput
   }
 
   export type GroupCreateManyInput = {
@@ -10384,31 +11731,31 @@ export namespace Prisma {
   }
 
   export type Expense_ParticipantsCreateInput = {
+    user_email: string
     share_amount: number
-    is_settled: boolean
+    is_settled?: boolean
     expense: ExpensesCreateNestedOneWithoutExpense_participantsInput
-    user: UserCreateNestedOneWithoutExpesne_participantsInput
   }
 
   export type Expense_ParticipantsUncheckedCreateInput = {
     expense_participants_id?: number
     expense_id: number
-    user_id: number
+    user_email: string
     share_amount: number
-    is_settled: boolean
+    is_settled?: boolean
   }
 
   export type Expense_ParticipantsUpdateInput = {
+    user_email?: StringFieldUpdateOperationsInput | string
     share_amount?: FloatFieldUpdateOperationsInput | number
     is_settled?: BoolFieldUpdateOperationsInput | boolean
     expense?: ExpensesUpdateOneRequiredWithoutExpense_participantsNestedInput
-    user?: UserUpdateOneRequiredWithoutExpesne_participantsNestedInput
   }
 
   export type Expense_ParticipantsUncheckedUpdateInput = {
     expense_participants_id?: IntFieldUpdateOperationsInput | number
     expense_id?: IntFieldUpdateOperationsInput | number
-    user_id?: IntFieldUpdateOperationsInput | number
+    user_email?: StringFieldUpdateOperationsInput | string
     share_amount?: FloatFieldUpdateOperationsInput | number
     is_settled?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -10416,12 +11763,13 @@ export namespace Prisma {
   export type Expense_ParticipantsCreateManyInput = {
     expense_participants_id?: number
     expense_id: number
-    user_id: number
+    user_email: string
     share_amount: number
-    is_settled: boolean
+    is_settled?: boolean
   }
 
   export type Expense_ParticipantsUpdateManyMutationInput = {
+    user_email?: StringFieldUpdateOperationsInput | string
     share_amount?: FloatFieldUpdateOperationsInput | number
     is_settled?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -10429,7 +11777,7 @@ export namespace Prisma {
   export type Expense_ParticipantsUncheckedUpdateManyInput = {
     expense_participants_id?: IntFieldUpdateOperationsInput | number
     expense_id?: IntFieldUpdateOperationsInput | number
-    user_id?: IntFieldUpdateOperationsInput | number
+    user_email?: StringFieldUpdateOperationsInput | string
     share_amount?: FloatFieldUpdateOperationsInput | number
     is_settled?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -10470,6 +11818,65 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     group_id?: IntFieldUpdateOperationsInput | number
     user_email?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SettlementCreateInput = {
+    paid_by: string
+    paid_to: string
+    amount: number
+    created_at?: Date | string
+    group: GroupCreateNestedOneWithoutSettlementsInput
+  }
+
+  export type SettlementUncheckedCreateInput = {
+    id?: number
+    group_id: number
+    paid_by: string
+    paid_to: string
+    amount: number
+    created_at?: Date | string
+  }
+
+  export type SettlementUpdateInput = {
+    paid_by?: StringFieldUpdateOperationsInput | string
+    paid_to?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    group?: GroupUpdateOneRequiredWithoutSettlementsNestedInput
+  }
+
+  export type SettlementUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    group_id?: IntFieldUpdateOperationsInput | number
+    paid_by?: StringFieldUpdateOperationsInput | string
+    paid_to?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SettlementCreateManyInput = {
+    id?: number
+    group_id: number
+    paid_by: string
+    paid_to: string
+    amount: number
+    created_at?: Date | string
+  }
+
+  export type SettlementUpdateManyMutationInput = {
+    paid_by?: StringFieldUpdateOperationsInput | string
+    paid_to?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SettlementUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    group_id?: IntFieldUpdateOperationsInput | number
+    paid_by?: StringFieldUpdateOperationsInput | string
+    paid_to?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -10521,12 +11928,6 @@ export namespace Prisma {
     none?: GroupWhereInput
   }
 
-  export type Expense_ParticipantsListRelationFilter = {
-    every?: Expense_ParticipantsWhereInput
-    some?: Expense_ParticipantsWhereInput
-    none?: Expense_ParticipantsWhereInput
-  }
-
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -10541,10 +11942,6 @@ export namespace Prisma {
   }
 
   export type GroupOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type Expense_ParticipantsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10765,9 +12162,26 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type EnumSplitTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.SplitType | EnumSplitTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SplitType[] | ListEnumSplitTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SplitType[] | ListEnumSplitTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSplitTypeFilter<$PrismaModel> | $Enums.SplitType
+  }
+
   export type GroupNullableScalarRelationFilter = {
     is?: GroupWhereInput | null
     isNot?: GroupWhereInput | null
+  }
+
+  export type Expense_ParticipantsListRelationFilter = {
+    every?: Expense_ParticipantsWhereInput
+    some?: Expense_ParticipantsWhereInput
+    none?: Expense_ParticipantsWhereInput
+  }
+
+  export type Expense_ParticipantsOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type ExpensesCountOrderByAggregateInput = {
@@ -10778,6 +12192,8 @@ export namespace Prisma {
     group_id?: SortOrder
     created_at?: SortOrder
     currency?: SortOrder
+    split_type?: SortOrder
+    paid_by?: SortOrder
     created_by?: SortOrder
   }
 
@@ -10796,6 +12212,8 @@ export namespace Prisma {
     group_id?: SortOrder
     created_at?: SortOrder
     currency?: SortOrder
+    split_type?: SortOrder
+    paid_by?: SortOrder
     created_by?: SortOrder
   }
 
@@ -10807,6 +12225,8 @@ export namespace Prisma {
     group_id?: SortOrder
     created_at?: SortOrder
     currency?: SortOrder
+    split_type?: SortOrder
+    paid_by?: SortOrder
     created_by?: SortOrder
   }
 
@@ -10859,13 +12279,33 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type EnumSplitTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SplitType | EnumSplitTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SplitType[] | ListEnumSplitTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SplitType[] | ListEnumSplitTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSplitTypeWithAggregatesFilter<$PrismaModel> | $Enums.SplitType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSplitTypeFilter<$PrismaModel>
+    _max?: NestedEnumSplitTypeFilter<$PrismaModel>
+  }
+
   export type Group_MembersListRelationFilter = {
     every?: Group_MembersWhereInput
     some?: Group_MembersWhereInput
     none?: Group_MembersWhereInput
   }
 
+  export type SettlementListRelationFilter = {
+    every?: SettlementWhereInput
+    some?: SettlementWhereInput
+    none?: SettlementWhereInput
+  }
+
   export type Group_MembersOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SettlementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10910,15 +12350,15 @@ export namespace Prisma {
     isNot?: ExpensesWhereInput
   }
 
-  export type Expense_ParticipantsExpense_idUser_idCompoundUniqueInput = {
+  export type Expense_ParticipantsExpense_idUser_emailCompoundUniqueInput = {
     expense_id: number
-    user_id: number
+    user_email: string
   }
 
   export type Expense_ParticipantsCountOrderByAggregateInput = {
     expense_participants_id?: SortOrder
     expense_id?: SortOrder
-    user_id?: SortOrder
+    user_email?: SortOrder
     share_amount?: SortOrder
     is_settled?: SortOrder
   }
@@ -10926,14 +12366,13 @@ export namespace Prisma {
   export type Expense_ParticipantsAvgOrderByAggregateInput = {
     expense_participants_id?: SortOrder
     expense_id?: SortOrder
-    user_id?: SortOrder
     share_amount?: SortOrder
   }
 
   export type Expense_ParticipantsMaxOrderByAggregateInput = {
     expense_participants_id?: SortOrder
     expense_id?: SortOrder
-    user_id?: SortOrder
+    user_email?: SortOrder
     share_amount?: SortOrder
     is_settled?: SortOrder
   }
@@ -10941,7 +12380,7 @@ export namespace Prisma {
   export type Expense_ParticipantsMinOrderByAggregateInput = {
     expense_participants_id?: SortOrder
     expense_id?: SortOrder
-    user_id?: SortOrder
+    user_email?: SortOrder
     share_amount?: SortOrder
     is_settled?: SortOrder
   }
@@ -10949,7 +12388,6 @@ export namespace Prisma {
   export type Expense_ParticipantsSumOrderByAggregateInput = {
     expense_participants_id?: SortOrder
     expense_id?: SortOrder
-    user_id?: SortOrder
     share_amount?: SortOrder
   }
 
@@ -10999,6 +12437,45 @@ export namespace Prisma {
     group_id?: SortOrder
   }
 
+  export type SettlementCountOrderByAggregateInput = {
+    id?: SortOrder
+    group_id?: SortOrder
+    paid_by?: SortOrder
+    paid_to?: SortOrder
+    amount?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type SettlementAvgOrderByAggregateInput = {
+    id?: SortOrder
+    group_id?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type SettlementMaxOrderByAggregateInput = {
+    id?: SortOrder
+    group_id?: SortOrder
+    paid_by?: SortOrder
+    paid_to?: SortOrder
+    amount?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type SettlementMinOrderByAggregateInput = {
+    id?: SortOrder
+    group_id?: SortOrder
+    paid_by?: SortOrder
+    paid_to?: SortOrder
+    amount?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type SettlementSumOrderByAggregateInput = {
+    id?: SortOrder
+    group_id?: SortOrder
+    amount?: SortOrder
+  }
+
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -11026,13 +12503,6 @@ export namespace Prisma {
     connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
   }
 
-  export type Expense_ParticipantsCreateNestedManyWithoutUserInput = {
-    create?: XOR<Expense_ParticipantsCreateWithoutUserInput, Expense_ParticipantsUncheckedCreateWithoutUserInput> | Expense_ParticipantsCreateWithoutUserInput[] | Expense_ParticipantsUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: Expense_ParticipantsCreateOrConnectWithoutUserInput | Expense_ParticipantsCreateOrConnectWithoutUserInput[]
-    createMany?: Expense_ParticipantsCreateManyUserInputEnvelope
-    connect?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
-  }
-
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -11058,13 +12528,6 @@ export namespace Prisma {
     connectOrCreate?: GroupCreateOrConnectWithoutCreatorInput | GroupCreateOrConnectWithoutCreatorInput[]
     createMany?: GroupCreateManyCreatorInputEnvelope
     connect?: GroupWhereUniqueInput | GroupWhereUniqueInput[]
-  }
-
-  export type Expense_ParticipantsUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<Expense_ParticipantsCreateWithoutUserInput, Expense_ParticipantsUncheckedCreateWithoutUserInput> | Expense_ParticipantsCreateWithoutUserInput[] | Expense_ParticipantsUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: Expense_ParticipantsCreateOrConnectWithoutUserInput | Expense_ParticipantsCreateOrConnectWithoutUserInput[]
-    createMany?: Expense_ParticipantsCreateManyUserInputEnvelope
-    connect?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -11121,20 +12584,6 @@ export namespace Prisma {
     update?: GroupUpdateWithWhereUniqueWithoutCreatorInput | GroupUpdateWithWhereUniqueWithoutCreatorInput[]
     updateMany?: GroupUpdateManyWithWhereWithoutCreatorInput | GroupUpdateManyWithWhereWithoutCreatorInput[]
     deleteMany?: GroupScalarWhereInput | GroupScalarWhereInput[]
-  }
-
-  export type Expense_ParticipantsUpdateManyWithoutUserNestedInput = {
-    create?: XOR<Expense_ParticipantsCreateWithoutUserInput, Expense_ParticipantsUncheckedCreateWithoutUserInput> | Expense_ParticipantsCreateWithoutUserInput[] | Expense_ParticipantsUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: Expense_ParticipantsCreateOrConnectWithoutUserInput | Expense_ParticipantsCreateOrConnectWithoutUserInput[]
-    upsert?: Expense_ParticipantsUpsertWithWhereUniqueWithoutUserInput | Expense_ParticipantsUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: Expense_ParticipantsCreateManyUserInputEnvelope
-    set?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
-    disconnect?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
-    delete?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
-    connect?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
-    update?: Expense_ParticipantsUpdateWithWhereUniqueWithoutUserInput | Expense_ParticipantsUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: Expense_ParticipantsUpdateManyWithWhereWithoutUserInput | Expense_ParticipantsUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: Expense_ParticipantsScalarWhereInput | Expense_ParticipantsScalarWhereInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -11195,20 +12644,6 @@ export namespace Prisma {
     update?: GroupUpdateWithWhereUniqueWithoutCreatorInput | GroupUpdateWithWhereUniqueWithoutCreatorInput[]
     updateMany?: GroupUpdateManyWithWhereWithoutCreatorInput | GroupUpdateManyWithWhereWithoutCreatorInput[]
     deleteMany?: GroupScalarWhereInput | GroupScalarWhereInput[]
-  }
-
-  export type Expense_ParticipantsUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<Expense_ParticipantsCreateWithoutUserInput, Expense_ParticipantsUncheckedCreateWithoutUserInput> | Expense_ParticipantsCreateWithoutUserInput[] | Expense_ParticipantsUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: Expense_ParticipantsCreateOrConnectWithoutUserInput | Expense_ParticipantsCreateOrConnectWithoutUserInput[]
-    upsert?: Expense_ParticipantsUpsertWithWhereUniqueWithoutUserInput | Expense_ParticipantsUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: Expense_ParticipantsCreateManyUserInputEnvelope
-    set?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
-    disconnect?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
-    delete?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
-    connect?: Expense_ParticipantsWhereUniqueInput | Expense_ParticipantsWhereUniqueInput[]
-    update?: Expense_ParticipantsUpdateWithWhereUniqueWithoutUserInput | Expense_ParticipantsUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: Expense_ParticipantsUpdateManyWithWhereWithoutUserInput | Expense_ParticipantsUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: Expense_ParticipantsScalarWhereInput | Expense_ParticipantsScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutSessionInput = {
@@ -11285,6 +12720,10 @@ export namespace Prisma {
     set?: $Enums.ExpenseCategory
   }
 
+  export type EnumSplitTypeFieldUpdateOperationsInput = {
+    set?: $Enums.SplitType
+  }
+
   export type UserUpdateOneRequiredWithoutExpenseNestedInput = {
     create?: XOR<UserCreateWithoutExpenseInput, UserUncheckedCreateWithoutExpenseInput>
     connectOrCreate?: UserCreateOrConnectWithoutExpenseInput
@@ -11359,6 +12798,13 @@ export namespace Prisma {
     connect?: Group_MembersWhereUniqueInput | Group_MembersWhereUniqueInput[]
   }
 
+  export type SettlementCreateNestedManyWithoutGroupInput = {
+    create?: XOR<SettlementCreateWithoutGroupInput, SettlementUncheckedCreateWithoutGroupInput> | SettlementCreateWithoutGroupInput[] | SettlementUncheckedCreateWithoutGroupInput[]
+    connectOrCreate?: SettlementCreateOrConnectWithoutGroupInput | SettlementCreateOrConnectWithoutGroupInput[]
+    createMany?: SettlementCreateManyGroupInputEnvelope
+    connect?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
+  }
+
   export type ExpensesUncheckedCreateNestedManyWithoutGroupInput = {
     create?: XOR<ExpensesCreateWithoutGroupInput, ExpensesUncheckedCreateWithoutGroupInput> | ExpensesCreateWithoutGroupInput[] | ExpensesUncheckedCreateWithoutGroupInput[]
     connectOrCreate?: ExpensesCreateOrConnectWithoutGroupInput | ExpensesCreateOrConnectWithoutGroupInput[]
@@ -11371,6 +12817,13 @@ export namespace Prisma {
     connectOrCreate?: Group_MembersCreateOrConnectWithoutGroupInput | Group_MembersCreateOrConnectWithoutGroupInput[]
     createMany?: Group_MembersCreateManyGroupInputEnvelope
     connect?: Group_MembersWhereUniqueInput | Group_MembersWhereUniqueInput[]
+  }
+
+  export type SettlementUncheckedCreateNestedManyWithoutGroupInput = {
+    create?: XOR<SettlementCreateWithoutGroupInput, SettlementUncheckedCreateWithoutGroupInput> | SettlementCreateWithoutGroupInput[] | SettlementUncheckedCreateWithoutGroupInput[]
+    connectOrCreate?: SettlementCreateOrConnectWithoutGroupInput | SettlementCreateOrConnectWithoutGroupInput[]
+    createMany?: SettlementCreateManyGroupInputEnvelope
+    connect?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutGroupNestedInput = {
@@ -11409,6 +12862,20 @@ export namespace Prisma {
     deleteMany?: Group_MembersScalarWhereInput | Group_MembersScalarWhereInput[]
   }
 
+  export type SettlementUpdateManyWithoutGroupNestedInput = {
+    create?: XOR<SettlementCreateWithoutGroupInput, SettlementUncheckedCreateWithoutGroupInput> | SettlementCreateWithoutGroupInput[] | SettlementUncheckedCreateWithoutGroupInput[]
+    connectOrCreate?: SettlementCreateOrConnectWithoutGroupInput | SettlementCreateOrConnectWithoutGroupInput[]
+    upsert?: SettlementUpsertWithWhereUniqueWithoutGroupInput | SettlementUpsertWithWhereUniqueWithoutGroupInput[]
+    createMany?: SettlementCreateManyGroupInputEnvelope
+    set?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
+    disconnect?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
+    delete?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
+    connect?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
+    update?: SettlementUpdateWithWhereUniqueWithoutGroupInput | SettlementUpdateWithWhereUniqueWithoutGroupInput[]
+    updateMany?: SettlementUpdateManyWithWhereWithoutGroupInput | SettlementUpdateManyWithWhereWithoutGroupInput[]
+    deleteMany?: SettlementScalarWhereInput | SettlementScalarWhereInput[]
+  }
+
   export type ExpensesUncheckedUpdateManyWithoutGroupNestedInput = {
     create?: XOR<ExpensesCreateWithoutGroupInput, ExpensesUncheckedCreateWithoutGroupInput> | ExpensesCreateWithoutGroupInput[] | ExpensesUncheckedCreateWithoutGroupInput[]
     connectOrCreate?: ExpensesCreateOrConnectWithoutGroupInput | ExpensesCreateOrConnectWithoutGroupInput[]
@@ -11437,16 +12904,24 @@ export namespace Prisma {
     deleteMany?: Group_MembersScalarWhereInput | Group_MembersScalarWhereInput[]
   }
 
+  export type SettlementUncheckedUpdateManyWithoutGroupNestedInput = {
+    create?: XOR<SettlementCreateWithoutGroupInput, SettlementUncheckedCreateWithoutGroupInput> | SettlementCreateWithoutGroupInput[] | SettlementUncheckedCreateWithoutGroupInput[]
+    connectOrCreate?: SettlementCreateOrConnectWithoutGroupInput | SettlementCreateOrConnectWithoutGroupInput[]
+    upsert?: SettlementUpsertWithWhereUniqueWithoutGroupInput | SettlementUpsertWithWhereUniqueWithoutGroupInput[]
+    createMany?: SettlementCreateManyGroupInputEnvelope
+    set?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
+    disconnect?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
+    delete?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
+    connect?: SettlementWhereUniqueInput | SettlementWhereUniqueInput[]
+    update?: SettlementUpdateWithWhereUniqueWithoutGroupInput | SettlementUpdateWithWhereUniqueWithoutGroupInput[]
+    updateMany?: SettlementUpdateManyWithWhereWithoutGroupInput | SettlementUpdateManyWithWhereWithoutGroupInput[]
+    deleteMany?: SettlementScalarWhereInput | SettlementScalarWhereInput[]
+  }
+
   export type ExpensesCreateNestedOneWithoutExpense_participantsInput = {
     create?: XOR<ExpensesCreateWithoutExpense_participantsInput, ExpensesUncheckedCreateWithoutExpense_participantsInput>
     connectOrCreate?: ExpensesCreateOrConnectWithoutExpense_participantsInput
     connect?: ExpensesWhereUniqueInput
-  }
-
-  export type UserCreateNestedOneWithoutExpesne_participantsInput = {
-    create?: XOR<UserCreateWithoutExpesne_participantsInput, UserUncheckedCreateWithoutExpesne_participantsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutExpesne_participantsInput
-    connect?: UserWhereUniqueInput
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -11461,14 +12936,6 @@ export namespace Prisma {
     update?: XOR<XOR<ExpensesUpdateToOneWithWhereWithoutExpense_participantsInput, ExpensesUpdateWithoutExpense_participantsInput>, ExpensesUncheckedUpdateWithoutExpense_participantsInput>
   }
 
-  export type UserUpdateOneRequiredWithoutExpesne_participantsNestedInput = {
-    create?: XOR<UserCreateWithoutExpesne_participantsInput, UserUncheckedCreateWithoutExpesne_participantsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutExpesne_participantsInput
-    upsert?: UserUpsertWithoutExpesne_participantsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutExpesne_participantsInput, UserUpdateWithoutExpesne_participantsInput>, UserUncheckedUpdateWithoutExpesne_participantsInput>
-  }
-
   export type GroupCreateNestedOneWithoutGroupMembersInput = {
     create?: XOR<GroupCreateWithoutGroupMembersInput, GroupUncheckedCreateWithoutGroupMembersInput>
     connectOrCreate?: GroupCreateOrConnectWithoutGroupMembersInput
@@ -11481,6 +12948,20 @@ export namespace Prisma {
     upsert?: GroupUpsertWithoutGroupMembersInput
     connect?: GroupWhereUniqueInput
     update?: XOR<XOR<GroupUpdateToOneWithWhereWithoutGroupMembersInput, GroupUpdateWithoutGroupMembersInput>, GroupUncheckedUpdateWithoutGroupMembersInput>
+  }
+
+  export type GroupCreateNestedOneWithoutSettlementsInput = {
+    create?: XOR<GroupCreateWithoutSettlementsInput, GroupUncheckedCreateWithoutSettlementsInput>
+    connectOrCreate?: GroupCreateOrConnectWithoutSettlementsInput
+    connect?: GroupWhereUniqueInput
+  }
+
+  export type GroupUpdateOneRequiredWithoutSettlementsNestedInput = {
+    create?: XOR<GroupCreateWithoutSettlementsInput, GroupUncheckedCreateWithoutSettlementsInput>
+    connectOrCreate?: GroupCreateOrConnectWithoutSettlementsInput
+    upsert?: GroupUpsertWithoutSettlementsInput
+    connect?: GroupWhereUniqueInput
+    update?: XOR<XOR<GroupUpdateToOneWithWhereWithoutSettlementsInput, GroupUpdateWithoutSettlementsInput>, GroupUncheckedUpdateWithoutSettlementsInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -11626,6 +13107,13 @@ export namespace Prisma {
     not?: NestedEnumExpenseCategoryFilter<$PrismaModel> | $Enums.ExpenseCategory
   }
 
+  export type NestedEnumSplitTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.SplitType | EnumSplitTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SplitType[] | ListEnumSplitTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SplitType[] | ListEnumSplitTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSplitTypeFilter<$PrismaModel> | $Enums.SplitType
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -11677,6 +13165,16 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumSplitTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SplitType | EnumSplitTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.SplitType[] | ListEnumSplitTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SplitType[] | ListEnumSplitTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSplitTypeWithAggregatesFilter<$PrismaModel> | $Enums.SplitType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSplitTypeFilter<$PrismaModel>
+    _max?: NestedEnumSplitTypeFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -11737,6 +13235,8 @@ export namespace Prisma {
     title: string
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     group?: GroupCreateNestedOneWithoutExpensesInput
     Expense_participants?: Expense_ParticipantsCreateNestedManyWithoutExpenseInput
   }
@@ -11749,6 +13249,8 @@ export namespace Prisma {
     group_id?: number | null
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     Expense_participants?: Expense_ParticipantsUncheckedCreateNestedManyWithoutExpenseInput
   }
 
@@ -11767,6 +13269,7 @@ export namespace Prisma {
     created_at?: Date | string
     expenses?: ExpensesCreateNestedManyWithoutGroupInput
     groupMembers?: Group_MembersCreateNestedManyWithoutGroupInput
+    settlements?: SettlementCreateNestedManyWithoutGroupInput
   }
 
   export type GroupUncheckedCreateWithoutCreatorInput = {
@@ -11775,6 +13278,7 @@ export namespace Prisma {
     created_at?: Date | string
     expenses?: ExpensesUncheckedCreateNestedManyWithoutGroupInput
     groupMembers?: Group_MembersUncheckedCreateNestedManyWithoutGroupInput
+    settlements?: SettlementUncheckedCreateNestedManyWithoutGroupInput
   }
 
   export type GroupCreateOrConnectWithoutCreatorInput = {
@@ -11784,29 +13288,6 @@ export namespace Prisma {
 
   export type GroupCreateManyCreatorInputEnvelope = {
     data: GroupCreateManyCreatorInput | GroupCreateManyCreatorInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type Expense_ParticipantsCreateWithoutUserInput = {
-    share_amount: number
-    is_settled: boolean
-    expense: ExpensesCreateNestedOneWithoutExpense_participantsInput
-  }
-
-  export type Expense_ParticipantsUncheckedCreateWithoutUserInput = {
-    expense_participants_id?: number
-    expense_id: number
-    share_amount: number
-    is_settled: boolean
-  }
-
-  export type Expense_ParticipantsCreateOrConnectWithoutUserInput = {
-    where: Expense_ParticipantsWhereUniqueInput
-    create: XOR<Expense_ParticipantsCreateWithoutUserInput, Expense_ParticipantsUncheckedCreateWithoutUserInput>
-  }
-
-  export type Expense_ParticipantsCreateManyUserInputEnvelope = {
-    data: Expense_ParticipantsCreateManyUserInput | Expense_ParticipantsCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -11887,6 +13368,8 @@ export namespace Prisma {
     group_id?: IntNullableFilter<"Expenses"> | number | null
     created_at?: DateTimeFilter<"Expenses"> | Date | string
     currency?: StringFilter<"Expenses"> | string
+    split_type?: EnumSplitTypeFilter<"Expenses"> | $Enums.SplitType
+    paid_by?: StringNullableFilter<"Expenses"> | string | null
     created_by?: IntFilter<"Expenses"> | number
   }
 
@@ -11916,40 +13399,12 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Group"> | Date | string
   }
 
-  export type Expense_ParticipantsUpsertWithWhereUniqueWithoutUserInput = {
-    where: Expense_ParticipantsWhereUniqueInput
-    update: XOR<Expense_ParticipantsUpdateWithoutUserInput, Expense_ParticipantsUncheckedUpdateWithoutUserInput>
-    create: XOR<Expense_ParticipantsCreateWithoutUserInput, Expense_ParticipantsUncheckedCreateWithoutUserInput>
-  }
-
-  export type Expense_ParticipantsUpdateWithWhereUniqueWithoutUserInput = {
-    where: Expense_ParticipantsWhereUniqueInput
-    data: XOR<Expense_ParticipantsUpdateWithoutUserInput, Expense_ParticipantsUncheckedUpdateWithoutUserInput>
-  }
-
-  export type Expense_ParticipantsUpdateManyWithWhereWithoutUserInput = {
-    where: Expense_ParticipantsScalarWhereInput
-    data: XOR<Expense_ParticipantsUpdateManyMutationInput, Expense_ParticipantsUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type Expense_ParticipantsScalarWhereInput = {
-    AND?: Expense_ParticipantsScalarWhereInput | Expense_ParticipantsScalarWhereInput[]
-    OR?: Expense_ParticipantsScalarWhereInput[]
-    NOT?: Expense_ParticipantsScalarWhereInput | Expense_ParticipantsScalarWhereInput[]
-    expense_participants_id?: IntFilter<"Expense_Participants"> | number
-    expense_id?: IntFilter<"Expense_Participants"> | number
-    user_id?: IntFilter<"Expense_Participants"> | number
-    share_amount?: FloatFilter<"Expense_Participants"> | number
-    is_settled?: BoolFilter<"Expense_Participants"> | boolean
-  }
-
   export type UserCreateWithoutSessionInput = {
     googleId?: string | null
     email?: string | null
     profile?: ProfileCreateNestedOneWithoutUserInput
     expense?: ExpensesCreateNestedManyWithoutUserInput
     group?: GroupCreateNestedManyWithoutCreatorInput
-    Expesne_participants?: Expense_ParticipantsCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionInput = {
@@ -11959,7 +13414,6 @@ export namespace Prisma {
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     expense?: ExpensesUncheckedCreateNestedManyWithoutUserInput
     group?: GroupUncheckedCreateNestedManyWithoutCreatorInput
-    Expesne_participants?: Expense_ParticipantsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionInput = {
@@ -11984,7 +13438,6 @@ export namespace Prisma {
     profile?: ProfileUpdateOneWithoutUserNestedInput
     expense?: ExpensesUpdateManyWithoutUserNestedInput
     group?: GroupUpdateManyWithoutCreatorNestedInput
-    Expesne_participants?: Expense_ParticipantsUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionInput = {
@@ -11994,7 +13447,6 @@ export namespace Prisma {
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     expense?: ExpensesUncheckedUpdateManyWithoutUserNestedInput
     group?: GroupUncheckedUpdateManyWithoutCreatorNestedInput
-    Expesne_participants?: Expense_ParticipantsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutProfileInput = {
@@ -12003,7 +13455,6 @@ export namespace Prisma {
     session?: SessionCreateNestedManyWithoutUserInput
     expense?: ExpensesCreateNestedManyWithoutUserInput
     group?: GroupCreateNestedManyWithoutCreatorInput
-    Expesne_participants?: Expense_ParticipantsCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutProfileInput = {
@@ -12013,7 +13464,6 @@ export namespace Prisma {
     session?: SessionUncheckedCreateNestedManyWithoutUserInput
     expense?: ExpensesUncheckedCreateNestedManyWithoutUserInput
     group?: GroupUncheckedCreateNestedManyWithoutCreatorInput
-    Expesne_participants?: Expense_ParticipantsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutProfileInput = {
@@ -12038,7 +13488,6 @@ export namespace Prisma {
     session?: SessionUpdateManyWithoutUserNestedInput
     expense?: ExpensesUpdateManyWithoutUserNestedInput
     group?: GroupUpdateManyWithoutCreatorNestedInput
-    Expesne_participants?: Expense_ParticipantsUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProfileInput = {
@@ -12048,7 +13497,6 @@ export namespace Prisma {
     session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     expense?: ExpensesUncheckedUpdateManyWithoutUserNestedInput
     group?: GroupUncheckedUpdateManyWithoutCreatorNestedInput
-    Expesne_participants?: Expense_ParticipantsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutExpenseInput = {
@@ -12057,7 +13505,6 @@ export namespace Prisma {
     session?: SessionCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     group?: GroupCreateNestedManyWithoutCreatorInput
-    Expesne_participants?: Expense_ParticipantsCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutExpenseInput = {
@@ -12067,7 +13514,6 @@ export namespace Prisma {
     session?: SessionUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     group?: GroupUncheckedCreateNestedManyWithoutCreatorInput
-    Expesne_participants?: Expense_ParticipantsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutExpenseInput = {
@@ -12080,6 +13526,7 @@ export namespace Prisma {
     created_at?: Date | string
     creator: UserCreateNestedOneWithoutGroupInput
     groupMembers?: Group_MembersCreateNestedManyWithoutGroupInput
+    settlements?: SettlementCreateNestedManyWithoutGroupInput
   }
 
   export type GroupUncheckedCreateWithoutExpensesInput = {
@@ -12088,6 +13535,7 @@ export namespace Prisma {
     created_by: number
     created_at?: Date | string
     groupMembers?: Group_MembersUncheckedCreateNestedManyWithoutGroupInput
+    settlements?: SettlementUncheckedCreateNestedManyWithoutGroupInput
   }
 
   export type GroupCreateOrConnectWithoutExpensesInput = {
@@ -12096,16 +13544,16 @@ export namespace Prisma {
   }
 
   export type Expense_ParticipantsCreateWithoutExpenseInput = {
+    user_email: string
     share_amount: number
-    is_settled: boolean
-    user: UserCreateNestedOneWithoutExpesne_participantsInput
+    is_settled?: boolean
   }
 
   export type Expense_ParticipantsUncheckedCreateWithoutExpenseInput = {
     expense_participants_id?: number
-    user_id: number
+    user_email: string
     share_amount: number
-    is_settled: boolean
+    is_settled?: boolean
   }
 
   export type Expense_ParticipantsCreateOrConnectWithoutExpenseInput = {
@@ -12135,7 +13583,6 @@ export namespace Prisma {
     session?: SessionUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     group?: GroupUpdateManyWithoutCreatorNestedInput
-    Expesne_participants?: Expense_ParticipantsUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExpenseInput = {
@@ -12145,7 +13592,6 @@ export namespace Prisma {
     session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     group?: GroupUncheckedUpdateManyWithoutCreatorNestedInput
-    Expesne_participants?: Expense_ParticipantsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type GroupUpsertWithoutExpensesInput = {
@@ -12164,6 +13610,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutGroupNestedInput
     groupMembers?: Group_MembersUpdateManyWithoutGroupNestedInput
+    settlements?: SettlementUpdateManyWithoutGroupNestedInput
   }
 
   export type GroupUncheckedUpdateWithoutExpensesInput = {
@@ -12172,6 +13619,7 @@ export namespace Prisma {
     created_by?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     groupMembers?: Group_MembersUncheckedUpdateManyWithoutGroupNestedInput
+    settlements?: SettlementUncheckedUpdateManyWithoutGroupNestedInput
   }
 
   export type Expense_ParticipantsUpsertWithWhereUniqueWithoutExpenseInput = {
@@ -12190,13 +13638,23 @@ export namespace Prisma {
     data: XOR<Expense_ParticipantsUpdateManyMutationInput, Expense_ParticipantsUncheckedUpdateManyWithoutExpenseInput>
   }
 
+  export type Expense_ParticipantsScalarWhereInput = {
+    AND?: Expense_ParticipantsScalarWhereInput | Expense_ParticipantsScalarWhereInput[]
+    OR?: Expense_ParticipantsScalarWhereInput[]
+    NOT?: Expense_ParticipantsScalarWhereInput | Expense_ParticipantsScalarWhereInput[]
+    expense_participants_id?: IntFilter<"Expense_Participants"> | number
+    expense_id?: IntFilter<"Expense_Participants"> | number
+    user_email?: StringFilter<"Expense_Participants"> | string
+    share_amount?: FloatFilter<"Expense_Participants"> | number
+    is_settled?: BoolFilter<"Expense_Participants"> | boolean
+  }
+
   export type UserCreateWithoutGroupInput = {
     googleId?: string | null
     email?: string | null
     session?: SessionCreateNestedManyWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     expense?: ExpensesCreateNestedManyWithoutUserInput
-    Expesne_participants?: Expense_ParticipantsCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutGroupInput = {
@@ -12206,7 +13664,6 @@ export namespace Prisma {
     session?: SessionUncheckedCreateNestedManyWithoutUserInput
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     expense?: ExpensesUncheckedCreateNestedManyWithoutUserInput
-    Expesne_participants?: Expense_ParticipantsUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutGroupInput = {
@@ -12220,6 +13677,8 @@ export namespace Prisma {
     title: string
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     user: UserCreateNestedOneWithoutExpenseInput
     Expense_participants?: Expense_ParticipantsCreateNestedManyWithoutExpenseInput
   }
@@ -12231,6 +13690,8 @@ export namespace Prisma {
     title: string
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     created_by: number
     Expense_participants?: Expense_ParticipantsUncheckedCreateNestedManyWithoutExpenseInput
   }
@@ -12264,6 +13725,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SettlementCreateWithoutGroupInput = {
+    paid_by: string
+    paid_to: string
+    amount: number
+    created_at?: Date | string
+  }
+
+  export type SettlementUncheckedCreateWithoutGroupInput = {
+    id?: number
+    paid_by: string
+    paid_to: string
+    amount: number
+    created_at?: Date | string
+  }
+
+  export type SettlementCreateOrConnectWithoutGroupInput = {
+    where: SettlementWhereUniqueInput
+    create: XOR<SettlementCreateWithoutGroupInput, SettlementUncheckedCreateWithoutGroupInput>
+  }
+
+  export type SettlementCreateManyGroupInputEnvelope = {
+    data: SettlementCreateManyGroupInput | SettlementCreateManyGroupInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutGroupInput = {
     update: XOR<UserUpdateWithoutGroupInput, UserUncheckedUpdateWithoutGroupInput>
     create: XOR<UserCreateWithoutGroupInput, UserUncheckedCreateWithoutGroupInput>
@@ -12281,7 +13767,6 @@ export namespace Prisma {
     session?: SessionUpdateManyWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     expense?: ExpensesUpdateManyWithoutUserNestedInput
-    Expesne_participants?: Expense_ParticipantsUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGroupInput = {
@@ -12291,7 +13776,6 @@ export namespace Prisma {
     session?: SessionUncheckedUpdateManyWithoutUserNestedInput
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     expense?: ExpensesUncheckedUpdateManyWithoutUserNestedInput
-    Expesne_participants?: Expense_ParticipantsUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ExpensesUpsertWithWhereUniqueWithoutGroupInput = {
@@ -12335,12 +13819,42 @@ export namespace Prisma {
     user_email?: StringFilter<"Group_Members"> | string
   }
 
+  export type SettlementUpsertWithWhereUniqueWithoutGroupInput = {
+    where: SettlementWhereUniqueInput
+    update: XOR<SettlementUpdateWithoutGroupInput, SettlementUncheckedUpdateWithoutGroupInput>
+    create: XOR<SettlementCreateWithoutGroupInput, SettlementUncheckedCreateWithoutGroupInput>
+  }
+
+  export type SettlementUpdateWithWhereUniqueWithoutGroupInput = {
+    where: SettlementWhereUniqueInput
+    data: XOR<SettlementUpdateWithoutGroupInput, SettlementUncheckedUpdateWithoutGroupInput>
+  }
+
+  export type SettlementUpdateManyWithWhereWithoutGroupInput = {
+    where: SettlementScalarWhereInput
+    data: XOR<SettlementUpdateManyMutationInput, SettlementUncheckedUpdateManyWithoutGroupInput>
+  }
+
+  export type SettlementScalarWhereInput = {
+    AND?: SettlementScalarWhereInput | SettlementScalarWhereInput[]
+    OR?: SettlementScalarWhereInput[]
+    NOT?: SettlementScalarWhereInput | SettlementScalarWhereInput[]
+    id?: IntFilter<"Settlement"> | number
+    group_id?: IntFilter<"Settlement"> | number
+    paid_by?: StringFilter<"Settlement"> | string
+    paid_to?: StringFilter<"Settlement"> | string
+    amount?: FloatFilter<"Settlement"> | number
+    created_at?: DateTimeFilter<"Settlement"> | Date | string
+  }
+
   export type ExpensesCreateWithoutExpense_participantsInput = {
     amount: number
     category: $Enums.ExpenseCategory
     title: string
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     user: UserCreateNestedOneWithoutExpenseInput
     group?: GroupCreateNestedOneWithoutExpensesInput
   }
@@ -12353,36 +13867,14 @@ export namespace Prisma {
     group_id?: number | null
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     created_by: number
   }
 
   export type ExpensesCreateOrConnectWithoutExpense_participantsInput = {
     where: ExpensesWhereUniqueInput
     create: XOR<ExpensesCreateWithoutExpense_participantsInput, ExpensesUncheckedCreateWithoutExpense_participantsInput>
-  }
-
-  export type UserCreateWithoutExpesne_participantsInput = {
-    googleId?: string | null
-    email?: string | null
-    session?: SessionCreateNestedManyWithoutUserInput
-    profile?: ProfileCreateNestedOneWithoutUserInput
-    expense?: ExpensesCreateNestedManyWithoutUserInput
-    group?: GroupCreateNestedManyWithoutCreatorInput
-  }
-
-  export type UserUncheckedCreateWithoutExpesne_participantsInput = {
-    id?: number
-    googleId?: string | null
-    email?: string | null
-    session?: SessionUncheckedCreateNestedManyWithoutUserInput
-    profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
-    expense?: ExpensesUncheckedCreateNestedManyWithoutUserInput
-    group?: GroupUncheckedCreateNestedManyWithoutCreatorInput
-  }
-
-  export type UserCreateOrConnectWithoutExpesne_participantsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutExpesne_participantsInput, UserUncheckedCreateWithoutExpesne_participantsInput>
   }
 
   export type ExpensesUpsertWithoutExpense_participantsInput = {
@@ -12402,6 +13894,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutExpenseNestedInput
     group?: GroupUpdateOneWithoutExpensesNestedInput
   }
@@ -12414,37 +13908,9 @@ export namespace Prisma {
     group_id?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     created_by?: IntFieldUpdateOperationsInput | number
-  }
-
-  export type UserUpsertWithoutExpesne_participantsInput = {
-    update: XOR<UserUpdateWithoutExpesne_participantsInput, UserUncheckedUpdateWithoutExpesne_participantsInput>
-    create: XOR<UserCreateWithoutExpesne_participantsInput, UserUncheckedCreateWithoutExpesne_participantsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutExpesne_participantsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutExpesne_participantsInput, UserUncheckedUpdateWithoutExpesne_participantsInput>
-  }
-
-  export type UserUpdateWithoutExpesne_participantsInput = {
-    googleId?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    session?: SessionUpdateManyWithoutUserNestedInput
-    profile?: ProfileUpdateOneWithoutUserNestedInput
-    expense?: ExpensesUpdateManyWithoutUserNestedInput
-    group?: GroupUpdateManyWithoutCreatorNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutExpesne_participantsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    googleId?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    session?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
-    expense?: ExpensesUncheckedUpdateManyWithoutUserNestedInput
-    group?: GroupUncheckedUpdateManyWithoutCreatorNestedInput
   }
 
   export type GroupCreateWithoutGroupMembersInput = {
@@ -12452,6 +13918,7 @@ export namespace Prisma {
     created_at?: Date | string
     creator: UserCreateNestedOneWithoutGroupInput
     expenses?: ExpensesCreateNestedManyWithoutGroupInput
+    settlements?: SettlementCreateNestedManyWithoutGroupInput
   }
 
   export type GroupUncheckedCreateWithoutGroupMembersInput = {
@@ -12460,6 +13927,7 @@ export namespace Prisma {
     created_by: number
     created_at?: Date | string
     expenses?: ExpensesUncheckedCreateNestedManyWithoutGroupInput
+    settlements?: SettlementUncheckedCreateNestedManyWithoutGroupInput
   }
 
   export type GroupCreateOrConnectWithoutGroupMembersInput = {
@@ -12483,6 +13951,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutGroupNestedInput
     expenses?: ExpensesUpdateManyWithoutGroupNestedInput
+    settlements?: SettlementUpdateManyWithoutGroupNestedInput
   }
 
   export type GroupUncheckedUpdateWithoutGroupMembersInput = {
@@ -12491,6 +13960,57 @@ export namespace Prisma {
     created_by?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     expenses?: ExpensesUncheckedUpdateManyWithoutGroupNestedInput
+    settlements?: SettlementUncheckedUpdateManyWithoutGroupNestedInput
+  }
+
+  export type GroupCreateWithoutSettlementsInput = {
+    group_name: string
+    created_at?: Date | string
+    creator: UserCreateNestedOneWithoutGroupInput
+    expenses?: ExpensesCreateNestedManyWithoutGroupInput
+    groupMembers?: Group_MembersCreateNestedManyWithoutGroupInput
+  }
+
+  export type GroupUncheckedCreateWithoutSettlementsInput = {
+    group_id?: number
+    group_name: string
+    created_by: number
+    created_at?: Date | string
+    expenses?: ExpensesUncheckedCreateNestedManyWithoutGroupInput
+    groupMembers?: Group_MembersUncheckedCreateNestedManyWithoutGroupInput
+  }
+
+  export type GroupCreateOrConnectWithoutSettlementsInput = {
+    where: GroupWhereUniqueInput
+    create: XOR<GroupCreateWithoutSettlementsInput, GroupUncheckedCreateWithoutSettlementsInput>
+  }
+
+  export type GroupUpsertWithoutSettlementsInput = {
+    update: XOR<GroupUpdateWithoutSettlementsInput, GroupUncheckedUpdateWithoutSettlementsInput>
+    create: XOR<GroupCreateWithoutSettlementsInput, GroupUncheckedCreateWithoutSettlementsInput>
+    where?: GroupWhereInput
+  }
+
+  export type GroupUpdateToOneWithWhereWithoutSettlementsInput = {
+    where?: GroupWhereInput
+    data: XOR<GroupUpdateWithoutSettlementsInput, GroupUncheckedUpdateWithoutSettlementsInput>
+  }
+
+  export type GroupUpdateWithoutSettlementsInput = {
+    group_name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    creator?: UserUpdateOneRequiredWithoutGroupNestedInput
+    expenses?: ExpensesUpdateManyWithoutGroupNestedInput
+    groupMembers?: Group_MembersUpdateManyWithoutGroupNestedInput
+  }
+
+  export type GroupUncheckedUpdateWithoutSettlementsInput = {
+    group_id?: IntFieldUpdateOperationsInput | number
+    group_name?: StringFieldUpdateOperationsInput | string
+    created_by?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    expenses?: ExpensesUncheckedUpdateManyWithoutGroupNestedInput
+    groupMembers?: Group_MembersUncheckedUpdateManyWithoutGroupNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -12507,19 +14027,14 @@ export namespace Prisma {
     group_id?: number | null
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
   }
 
   export type GroupCreateManyCreatorInput = {
     group_id?: number
     group_name: string
     created_at?: Date | string
-  }
-
-  export type Expense_ParticipantsCreateManyUserInput = {
-    expense_participants_id?: number
-    expense_id: number
-    share_amount: number
-    is_settled: boolean
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -12545,6 +14060,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     group?: GroupUpdateOneWithoutExpensesNestedInput
     Expense_participants?: Expense_ParticipantsUpdateManyWithoutExpenseNestedInput
   }
@@ -12557,6 +14074,8 @@ export namespace Prisma {
     group_id?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     Expense_participants?: Expense_ParticipantsUncheckedUpdateManyWithoutExpenseNestedInput
   }
 
@@ -12568,6 +14087,8 @@ export namespace Prisma {
     group_id?: NullableIntFieldUpdateOperationsInput | number | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type GroupUpdateWithoutCreatorInput = {
@@ -12575,6 +14096,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     expenses?: ExpensesUpdateManyWithoutGroupNestedInput
     groupMembers?: Group_MembersUpdateManyWithoutGroupNestedInput
+    settlements?: SettlementUpdateManyWithoutGroupNestedInput
   }
 
   export type GroupUncheckedUpdateWithoutCreatorInput = {
@@ -12583,6 +14105,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     expenses?: ExpensesUncheckedUpdateManyWithoutGroupNestedInput
     groupMembers?: Group_MembersUncheckedUpdateManyWithoutGroupNestedInput
+    settlements?: SettlementUncheckedUpdateManyWithoutGroupNestedInput
   }
 
   export type GroupUncheckedUpdateManyWithoutCreatorInput = {
@@ -12591,49 +14114,29 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type Expense_ParticipantsUpdateWithoutUserInput = {
-    share_amount?: FloatFieldUpdateOperationsInput | number
-    is_settled?: BoolFieldUpdateOperationsInput | boolean
-    expense?: ExpensesUpdateOneRequiredWithoutExpense_participantsNestedInput
-  }
-
-  export type Expense_ParticipantsUncheckedUpdateWithoutUserInput = {
-    expense_participants_id?: IntFieldUpdateOperationsInput | number
-    expense_id?: IntFieldUpdateOperationsInput | number
-    share_amount?: FloatFieldUpdateOperationsInput | number
-    is_settled?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type Expense_ParticipantsUncheckedUpdateManyWithoutUserInput = {
-    expense_participants_id?: IntFieldUpdateOperationsInput | number
-    expense_id?: IntFieldUpdateOperationsInput | number
-    share_amount?: FloatFieldUpdateOperationsInput | number
-    is_settled?: BoolFieldUpdateOperationsInput | boolean
-  }
-
   export type Expense_ParticipantsCreateManyExpenseInput = {
     expense_participants_id?: number
-    user_id: number
+    user_email: string
     share_amount: number
-    is_settled: boolean
+    is_settled?: boolean
   }
 
   export type Expense_ParticipantsUpdateWithoutExpenseInput = {
+    user_email?: StringFieldUpdateOperationsInput | string
     share_amount?: FloatFieldUpdateOperationsInput | number
     is_settled?: BoolFieldUpdateOperationsInput | boolean
-    user?: UserUpdateOneRequiredWithoutExpesne_participantsNestedInput
   }
 
   export type Expense_ParticipantsUncheckedUpdateWithoutExpenseInput = {
     expense_participants_id?: IntFieldUpdateOperationsInput | number
-    user_id?: IntFieldUpdateOperationsInput | number
+    user_email?: StringFieldUpdateOperationsInput | string
     share_amount?: FloatFieldUpdateOperationsInput | number
     is_settled?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type Expense_ParticipantsUncheckedUpdateManyWithoutExpenseInput = {
     expense_participants_id?: IntFieldUpdateOperationsInput | number
-    user_id?: IntFieldUpdateOperationsInput | number
+    user_email?: StringFieldUpdateOperationsInput | string
     share_amount?: FloatFieldUpdateOperationsInput | number
     is_settled?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -12645,6 +14148,8 @@ export namespace Prisma {
     title: string
     created_at?: Date | string
     currency?: string
+    split_type?: $Enums.SplitType
+    paid_by?: string | null
     created_by: number
   }
 
@@ -12653,12 +14158,22 @@ export namespace Prisma {
     user_email: string
   }
 
+  export type SettlementCreateManyGroupInput = {
+    id?: number
+    paid_by: string
+    paid_to: string
+    amount: number
+    created_at?: Date | string
+  }
+
   export type ExpensesUpdateWithoutGroupInput = {
     amount?: FloatFieldUpdateOperationsInput | number
     category?: EnumExpenseCategoryFieldUpdateOperationsInput | $Enums.ExpenseCategory
     title?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutExpenseNestedInput
     Expense_participants?: Expense_ParticipantsUpdateManyWithoutExpenseNestedInput
   }
@@ -12670,6 +14185,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     created_by?: IntFieldUpdateOperationsInput | number
     Expense_participants?: Expense_ParticipantsUncheckedUpdateManyWithoutExpenseNestedInput
   }
@@ -12681,6 +14198,8 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     currency?: StringFieldUpdateOperationsInput | string
+    split_type?: EnumSplitTypeFieldUpdateOperationsInput | $Enums.SplitType
+    paid_by?: NullableStringFieldUpdateOperationsInput | string | null
     created_by?: IntFieldUpdateOperationsInput | number
   }
 
@@ -12696,6 +14215,29 @@ export namespace Prisma {
   export type Group_MembersUncheckedUpdateManyWithoutGroupInput = {
     id?: IntFieldUpdateOperationsInput | number
     user_email?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type SettlementUpdateWithoutGroupInput = {
+    paid_by?: StringFieldUpdateOperationsInput | string
+    paid_to?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SettlementUncheckedUpdateWithoutGroupInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    paid_by?: StringFieldUpdateOperationsInput | string
+    paid_to?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SettlementUncheckedUpdateManyWithoutGroupInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    paid_by?: StringFieldUpdateOperationsInput | string
+    paid_to?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

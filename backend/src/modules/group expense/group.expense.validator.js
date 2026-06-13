@@ -1,7 +1,11 @@
 import { z } from "zod";
 
+const ParticipantSchema = z.object({
+  email: z.email(),
+  share_amount: z.coerce.number().nonnegative(),
+});
+
 const Schema = z.object({
-  group_id: z.string().transform(Number),
   amount: z.coerce.number().positive(),
   category: z.enum([
     "FOOD",
@@ -20,7 +24,7 @@ const Schema = z.object({
   currency: z.string().default("INR"),
   paid_by: z.email(),
   split_type: z.enum(["EQUAL", "CUSTOM"]),
-  participants: z.array(),
+  participants: z.array(ParticipantSchema).min(1),
 });
 
 export default function GroupexpenseValidator(req, res, next) {

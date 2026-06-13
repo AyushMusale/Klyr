@@ -149,6 +149,8 @@ exports.Prisma.ExpensesScalarFieldEnum = {
   group_id: 'group_id',
   created_at: 'created_at',
   currency: 'currency',
+  split_type: 'split_type',
+  paid_by: 'paid_by',
   created_by: 'created_by'
 };
 
@@ -162,7 +164,7 @@ exports.Prisma.GroupScalarFieldEnum = {
 exports.Prisma.Expense_ParticipantsScalarFieldEnum = {
   expense_participants_id: 'expense_participants_id',
   expense_id: 'expense_id',
-  user_id: 'user_id',
+  user_email: 'user_email',
   share_amount: 'share_amount',
   is_settled: 'is_settled'
 };
@@ -171,6 +173,15 @@ exports.Prisma.Group_MembersScalarFieldEnum = {
   id: 'id',
   group_id: 'group_id',
   user_email: 'user_email'
+};
+
+exports.Prisma.SettlementScalarFieldEnum = {
+  id: 'id',
+  group_id: 'group_id',
+  paid_by: 'paid_by',
+  paid_to: 'paid_to',
+  amount: 'amount',
+  created_at: 'created_at'
 };
 
 exports.Prisma.SortOrder = {
@@ -201,6 +212,12 @@ exports.ExpenseCategory = exports.$Enums.ExpenseCategory = {
   OTHER: 'OTHER'
 };
 
+exports.SplitType = exports.$Enums.SplitType = {
+  EQUAL: 'EQUAL',
+  CUSTOM: 'CUSTOM',
+  PERCENT: 'PERCENT'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
@@ -208,7 +225,8 @@ exports.Prisma.ModelName = {
   Expenses: 'Expenses',
   Group: 'Group',
   Expense_Participants: 'Expense_Participants',
-  Group_Members: 'Group_Members'
+  Group_Members: 'Group_Members',
+  Settlement: 'Settlement'
 };
 
 /**

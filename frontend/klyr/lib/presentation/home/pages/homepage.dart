@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:klyr/data/model/activity_items.dart';
 import 'package:klyr/data/model/summary_row.dart';
 import 'package:klyr/presentation/auth/bloc/authbloc.dart';
 import 'package:klyr/presentation/auth/bloc/authevent.dart';
@@ -29,30 +28,12 @@ class _HomepageState extends State<Homepage> {
   late final PageController _pageController;
   int _segmentIndex = 0;
 
-  static var _groupActivities = [
-    ActivityItem(
-      id: 1,
-      title: 'Dinner at Agashiye',
-      date: 'May 21',
-      amount: '₹1,800',
-      isHighlighted: true,
-    ),
-    ActivityItem(
-      id: 2,
-      title: 'Cab to airport',
-      date: 'May 19',
-      amount: '₹420',
-    ),
-    ActivityItem(id: 3, title: 'Movie tickets', date: 'May 17', amount: '₹630'),
-    ActivityItem(
-      id: 4,
-      title: 'Groceries split',
-      date: 'May 15',
-      amount: '₹290',
-    ),
-  ];
+  String totalExpense = '...';
+  String totalOwe = '...';
+  String totalOwed = '...';
 
   static var _personalActivities = [];
+  static var _groupActivities = [];
 
   @override
   void initState() {
@@ -134,21 +115,21 @@ class _HomepageState extends State<Homepage> {
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   children: [
-                    const SummaryCard(
+                    SummaryCard(
                       rows: [
                         SummaryRow(
                           label: 'total expense',
-                          value: '₹4,850',
+                          value: totalExpense,
                           valueColor: _accent,
                         ),
                         SummaryRow(
                           label: 'owed to you',
-                          value: '₹1,200',
+                          value: totalOwed,
                           valueColor: _owedGreen,
                         ),
                         SummaryRow(
                           label: 'you owe',
-                          value: '₹650',
+                          value: totalOwe,
                           valueColor: _oweRed,
                         ),
                       ],
@@ -165,7 +146,10 @@ class _HomepageState extends State<Homepage> {
                         if (state is HomeSuccessState) {
                           setState(() {
                             _personalActivities = state.activityItems;
-                            _groupActivities = state.activityItems;
+                            _groupActivities = state.groupactivityItems;
+                            totalExpense = state.summary.totalExpense;
+                            totalOwed = state.summary.totalOwed;
+                            totalOwe = state.summary.totalOwes;
                           });
                         } else if (state is HomeUnauthState) {
                           context.read<Authbloc>().add(LogoutEvent());
@@ -207,7 +191,7 @@ class _HomepageState extends State<Homepage> {
                                       ? _groupActivities
                                       : _personalActivities;
                               if (index == 0) {
-                                return Groupexppage(items: []);
+                                return Groupexppage(items: items);
                               } else {
                                 return Personalexppage(items: items);
                               }

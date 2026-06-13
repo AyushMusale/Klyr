@@ -8,13 +8,13 @@ datasource db {
 }
 
 model User {
-  id                 Int                    @id @default(autoincrement())
-  googleId           String?                @unique
-  email              String?                @unique
-  session            Session[]
-  profile            Profile?
-  expense            Expenses[]
-  group              Group[]
+  id       Int        @id @default(autoincrement())
+  googleId String?    @unique
+  email    String?    @unique
+  session  Session[]
+  profile  Profile?
+  expense  Expenses[]
+  group    Group[]
 }
 
 model Session {
@@ -45,6 +45,7 @@ model Expenses {
   created_at DateTime        @default(now())
   currency   String          @default("INR")
   split_type SplitType       @default(EQUAL)
+  paid_by    String?
 
   created_by Int
   user       User   @relation(fields: [created_by], references: [id], onDelete: Cascade)
@@ -84,7 +85,7 @@ model Group {
 
   expenses     Expenses[]
   groupMembers Group_Members[]
-  settlements Settlement[]
+  settlements  Settlement[]
 }
 
 model Expense_Participants {

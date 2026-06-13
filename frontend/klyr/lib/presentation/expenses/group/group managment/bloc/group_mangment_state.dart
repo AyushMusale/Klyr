@@ -1,13 +1,26 @@
 import 'package:klyr/data/model/group.dart';
+import 'package:klyr/data/model/group_expense.dart';
+import 'package:klyr/data/model/summary_row.dart';
 
 class GroupMangmentState {}
 
 class GroupMangmentLoadedState extends GroupMangmentState {
   final Group group;
-  GroupMangmentLoadedState({required this.group});
+  final GroupSummary summary;
+  final List<GroupExpense> groupExpense;
+  GroupMangmentLoadedState({
+    required this.group,
+    required this.summary,
+    required this.groupExpense,
+  });
 }
 
 class GroupMangmentInitialState extends GroupMangmentState {}
+
+class GroupMangmentCreatedState extends GroupMangmentState {
+  final String message;
+  GroupMangmentCreatedState({required this.message});
+}
 
 class GroupMangmentLoadingState extends GroupMangmentState {}
 

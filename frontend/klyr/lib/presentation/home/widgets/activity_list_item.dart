@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:klyr/data/model/activity_items.dart';
 
-
-
 class ActivityListItem extends StatelessWidget {
   const ActivityListItem({super.key, required this.item, required this.fn});
 
@@ -63,7 +61,7 @@ class ActivityListItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    item.date,
+                    item.date ?? "",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: subtitleColor,
                       fontWeight: FontWeight.w500,
@@ -73,7 +71,7 @@ class ActivityListItem extends StatelessWidget {
               ),
             ),
             Text(
-              item.amount,
+              item.amount ?? '',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: amountColor,
                 fontWeight: FontWeight.w800,

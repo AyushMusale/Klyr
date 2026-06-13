@@ -21,7 +21,6 @@ function authmiddleware(req, res, next) {
 }
 
 async function refreshUserController(req, res) {
-  console.log('refreshuser hit')
   const { refresh_token } = req.body;
 
   if (!refresh_token) {
@@ -50,7 +49,7 @@ async function refreshUserController(req, res) {
     // issue new tokens
     const newTokens = await assignToken({
       email: decoded.email,
-      id: decoded.user_id,
+      user_id: decoded.user_id,
     });
 
     // replace old session with new refresh token
@@ -67,7 +66,6 @@ async function refreshUserController(req, res) {
       tokens: newTokens,
     });
   } catch (err) {
-    console.log(err)
     if (err.name === "TokenExpiredError") {
       return res.status(401).json({ message: "refresh-token-expired" });
     }

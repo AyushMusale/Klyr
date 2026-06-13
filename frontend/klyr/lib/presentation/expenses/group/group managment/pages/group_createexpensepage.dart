@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:klyr/data/localdb/profiledb.dart';
+import 'package:klyr/data/model/expense.dart';
 import 'package:klyr/data/model/expense_category.dart';
 import 'package:klyr/data/model/group.dart';
+import 'package:klyr/presentation/auth/bloc/authbloc.dart';
+import 'package:klyr/presentation/auth/bloc/authevent.dart';
 import 'package:klyr/presentation/expenses/group/group%20managment/bloc/group_managment_bloc.dart';
 import 'package:klyr/presentation/expenses/group/group%20managment/bloc/group_managment_event.dart';
 import 'package:klyr/presentation/expenses/group/group%20managment/bloc/group_mangment_state.dart';
@@ -367,7 +371,73 @@ class _GroupCreateexpensepageState extends State<GroupCreateexpensepage> {
                         ),
                       ),
                     ),
-                    ElevatedButton(onPressed: (){}, child: Text("Submit"))
+                    BlocConsumer<GroupManagmentBloc, GroupMangmentState>(
+                      listener: (context, state) {
+                        if (state is GroupMangmentUnauthState) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.message)),
+                          );
+                          context.read<Authbloc>().add(LogoutEvent());
+                        } else if (state is GroupMangmentFailureState) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.message)),
+                          );
+                        } else if (state is GroupMangmentCreatedState) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.message)),
+                          );
+                          context.pop();
+                        }
+                      },
+                      builder: (context, state) {
+                        return Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: SizedBox(
+                            height: maxHeight * 0.05,
+                            width: maxWidth,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                final members =
+                                    _memberControllers.entries.map((entry) {
+                                      return GroupMembers(
+                                        email: entry.key,
+                                        shareAmount:
+                                            double.tryParse(
+                                              entry.value.text.trim(),
+                                            ) ??
+                                            0.0,
+                                        isSettled: false,
+                                      );
+                                    }).toList();
+
+                                context.read<GroupManagmentBloc>().add(
+                                  CreateExpenseEvent(
+                                    expense: Expense(
+                                      title: _titleController.text..trim(),
+                                      amount: _amountController.text.trim(),
+                                      date: _selectedDate ?? DateTime.now(),
+                                      category:
+                                          expenseCategories[_selectedCategoryIndex]
+                                              .apiValue,
+                                      currency: "INR",
+                                      splitType:
+                                          selectedTab == 0 ? "EQUAL" : "CUSTOM",
+                                    ),
+                                    paidBy: paidBy,
+                                    groupId: int.parse(widget.id),
+                                    groupMembers: members,
+                                  ),
+                                );
+                              },
+                              child:
+                                  state is GroupMangmentLoadingState
+                                      ? CircularProgressIndicator()
+                                      : Text("Submit"),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               );
