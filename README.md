@@ -173,7 +173,7 @@ klyr/
 2. **Configure API endpoint**
    Update the API base URL in your repository configuration (typically in `lib/data/repo/`):
    ```dart
-   const String API_BASE_URL = 'http://localhost:3000/klyr/api';
+   const String API_BASE_URL = 'http://localhost:3003/klyr/api';
    ```
 
 3. **Run the app**
@@ -216,8 +216,6 @@ klyr/
 ### Group Expenses
 - `GET /klyr/api/expense/group/:id` — List group expenses
 - `POST /klyr/api/expense/group/:id` — Create group expense
-- `GET /klyr/api/expense/group/:id/settle` — Get settlement details
-- `POST /klyr/api/expense/group/:id/settle` — Record settlement
 
 ### Dashboard
 - `GET /klyr/api/home` — Get home dashboard data
@@ -237,7 +235,6 @@ klyr/
 ### Split Types
 - **EQUAL** — Split amount equally among all participants
 - **CUSTOM** — Each participant specifies their share amount
-- **PERCENT** — Split by percentage (e.g., 50% / 50%)
 
 ### Example
 Group expense of ₹300 split equally among 3 people:
@@ -259,7 +256,7 @@ cd frontend/klyr
 flutter run
 ```
 
-The app will connect to your local backend at `http://localhost:3000/klyr/api`.
+The app will connect to your local backend at `http://localhost:3003/klyr/api`.
 
 ## Development Workflow
 
