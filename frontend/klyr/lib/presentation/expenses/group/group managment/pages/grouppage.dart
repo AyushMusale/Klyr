@@ -26,6 +26,7 @@ class _GrouppageState extends State<Grouppage> {
   String title = "...";
 
   List<GroupExpense> groupExpense = [];
+  List<String> groupMembers = [];
 
   int selectedTab = 0;
 
@@ -41,6 +42,7 @@ class _GrouppageState extends State<Grouppage> {
     required String owed,
     required String groupName,
     required List<GroupExpense> groupexpense,
+    required List<String> groupMembers,
   }) {
     setState(() {
       totalSpent = spent;
@@ -48,6 +50,7 @@ class _GrouppageState extends State<Grouppage> {
       totalOwed = owed;
       title = groupName;
       groupExpense = groupexpense;
+      groupMembers = this.groupMembers;
     });
   }
 
@@ -116,6 +119,7 @@ class _GrouppageState extends State<Grouppage> {
               owed: state.summary.totalOwed,
               groupName: state.group.groupName,
               groupexpense: state.groupExpense,
+              groupMembers: state.group.members ?? [],
             );
           }
         },
@@ -183,7 +187,10 @@ class _GrouppageState extends State<Grouppage> {
                         children: [
                           ExpensesTab(expenses: groupExpense),
                           BalancesTab(),
-                          MembersTab(),
+                          MembersTab(
+                            groupMembers: groupMembers,
+                            onRemove: () {},
+                          ),
                         ],
                       ),
                     ),

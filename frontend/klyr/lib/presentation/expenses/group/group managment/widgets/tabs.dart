@@ -127,10 +127,94 @@ class BalancesTab extends StatelessWidget {
 }
 
 class MembersTab extends StatelessWidget {
-  const MembersTab({super.key});
+  final List<String> groupMembers;
+  final GestureTapCallback onRemove;
+  const MembersTab({
+    super.key,
+    required this.groupMembers,
+    required this.onRemove,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    if (groupMembers.isEmpty) {
+      return const Center(
+        child: Text(
+          "No members yet",
+          style: TextStyle(color: AppColors.darkSubText, fontSize: 14),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      itemCount: groupMembers.length,
+      itemBuilder: (context, index) {
+        return MemberTile(email: groupMembers[index], onRemove: onRemove);
+      },
+    );
+  }
+}
+
+class MemberTile extends StatelessWidget {
+  final String email;
+
+  final GestureTapCallback onRemove;
+  const MemberTile({super.key, required this.email, required this.onRemove});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? AppColors.darkCard : AppColors.lightCard;
+    final borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    final textColor = isDark ? AppColors.darkText : AppColors.lightText;
+
+    final initials = email.substring(0, 2).toUpperCase();
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 20,
+            backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+            child: Text(
+              initials,
+              style: const TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              email,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          GestureDetector(
+            onTap: onRemove,
+            child: const Icon(
+              Icons.remove_circle_outline,
+              color: Colors.redAccent,
+              size: 22,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
